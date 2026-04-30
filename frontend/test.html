@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mock Test</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<h1>Mock Test</h1>
+<div id="timer">Time Left: 02:00</div>
+
+<div id="progress"></div>
+
+<div id="questionBox">
+    <h3 id="questionNumber"></h3>
+    <h2 id="questionText"></h2>
+    <div id="options"></div>
+</div>
+
+<div class="buttons">
+    <button onclick="prevQuestion()">Previous</button>
+    <button onclick="nextQuestion()">Next</button>
+    <button onclick="submitTest()">Submit</button>
+</div>
+
+<div id="resultBox" style="display:none;"></div>
+
+<script src="test.js"></script>
+
+</body>
+</html>

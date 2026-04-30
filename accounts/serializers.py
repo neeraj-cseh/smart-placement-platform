@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, UserProfile
+from .models import User, UserProfile, DailyGoal
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -14,8 +14,14 @@ class RegisterSerializer(serializers.ModelSerializer):
         return User.objects.create_user(**validated_data)
 
 
-# ✅ NEW
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = ['branch', 'cgpa', 'has_backlog', 'target_companies']
+
+
+# ✅ NEW
+class DailyGoalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DailyGoal
+        fields = ['id', 'goal_text', 'completed', 'date']

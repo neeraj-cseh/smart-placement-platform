@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, UserProfile
+from .models import User, UserProfile, DailyGoal, UserStreak
 
 
 class CustomUserAdmin(UserAdmin):
@@ -26,6 +26,7 @@ class CustomUserAdmin(UserAdmin):
     )
 
 
-# ✅ Register both models
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(UserProfile)
+admin.site.register(DailyGoal)
+admin.site.register(UserStreak)

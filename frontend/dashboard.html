@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <h1>Smart Placement Dashboard</h1>
+
+    <div class="cards">
+        <div class="card">
+            <h3>Total Attempts</h3>
+            <p id="total"></p>
+        </div>
+
+        <div class="card">
+            <h3>Correct Answers</h3>
+            <p id="correct"></p>
+        </div>
+
+        <div class="card">
+            <h3>Accuracy</h3>
+            <p id="accuracy"></p>
+        </div>
+    </div>
+
+    <h2>Topic Accuracy</h2>
+    <ul id="topics"></ul>
+
+    <h2>Weak Topics</h2>
+    <ul id="weak"></ul>
+
+    <script src="dashboard.js"></script>
+
+    <h2>Topic Accuracy Chart</h2>
+    <canvas id="topicChart"></canvas>
+
+    <h2>Performance Chart</h2>
+    <canvas id="performanceChart"></canvas>
+
+</body>
+</html>
