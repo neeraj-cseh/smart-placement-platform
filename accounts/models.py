@@ -42,10 +42,27 @@ class User(AbstractBaseUser, PermissionsMixin):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-    branch = models.CharField(max_length=100)
+    branch = models.CharField(max_length=100, blank=True)
+    college = models.CharField(max_length=160, blank=True)
+    degree = models.CharField(max_length=120, blank=True)
+    graduation_year = models.PositiveSmallIntegerField(null=True, blank=True)
     cgpa = models.FloatField(null=True, blank=True)
     has_backlog = models.BooleanField(default=False)
+    location = models.CharField(max_length=120, blank=True)
+    preferred_role = models.CharField(max_length=120, blank=True)
+    phone = models.CharField(max_length=30, blank=True)
+    linkedin_url = models.URLField(blank=True)
+    github_url = models.URLField(blank=True)
+    portfolio_url = models.URLField(blank=True)
+    resume_headline = models.CharField(max_length=180, blank=True)
+    bio = models.TextField(blank=True)
+    skills = models.JSONField(blank=True, null=True)
     target_companies = models.JSONField(blank=True, null=True)
+    weekly_goal_hours = models.PositiveSmallIntegerField(default=12)
+    timezone = models.CharField(max_length=80, default="Asia/Kolkata")
+    email_notifications = models.BooleanField(default=True)
+    product_updates = models.BooleanField(default=False)
+    public_profile = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
 

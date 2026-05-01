@@ -10,7 +10,7 @@ class CustomUserAdmin(UserAdmin):
     list_filter = ('is_staff', 'is_active')
 
     ordering = ('email',)
-    search_fields = ('email',)
+    search_fields = ('email', 'name')
 
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
@@ -27,6 +27,23 @@ class CustomUserAdmin(UserAdmin):
 
 
 admin.site.register(User, CustomUserAdmin)
-admin.site.register(UserProfile)
-admin.site.register(DailyGoal)
-admin.site.register(UserStreak)
+
+
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'branch', 'preferred_role', 'cgpa', 'has_backlog', 'weekly_goal_hours')
+    list_filter = ('has_backlog', 'public_profile', 'email_notifications')
+    search_fields = ('user__email', 'user__name', 'branch', 'college', 'preferred_role')
+
+
+@admin.register(DailyGoal)
+class DailyGoalAdmin(admin.ModelAdmin):
+    list_display = ('user', 'goal_text', 'completed', 'date')
+    list_filter = ('completed', 'date')
+    search_fields = ('user__email', 'goal_text')
+
+
+@admin.register(UserStreak)
+class UserStreakAdmin(admin.ModelAdmin):
+    list_display = ('user', 'current_streak', 'longest_streak', 'last_active_date')
+    search_fields = ('user__email', 'user__name')
