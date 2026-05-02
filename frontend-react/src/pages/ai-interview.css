@@ -1,0 +1,14 @@
+.ai-interview__cat-card { text-align: center; padding: 32px 24px; }
+.ai-interview__cat-icon { display: flex; align-items: center; justify-content: center; width: 64px; height: 64px; margin: 0 auto 16px; background: var(--bg-tertiary); border-radius: var(--radius-lg); color: var(--accent-secondary); }
+.ai-interview__cat-card h3 { margin-bottom: 8px; }
+.ai-interview__cat-card p { margin-bottom: 20px; }
+.ai-interview__textarea { width: 100%; padding: 16px; background: var(--bg-input); border: 1px solid var(--border-primary); border-radius: var(--radius); color: var(--text-primary); font-size: 0.875rem; resize: vertical; line-height: 1.6; margin-top: 16px; }
+.ai-interview__textarea:focus { outline: none; border-color: var(--accent-primary); }
+.ai-interview__error { padding: 10px 14px; background: var(--red-bg); color: var(--red); border-radius: var(--radius); font-size: 0.875rem; margin-top: 12px; }
+.ai-interview__result-score { font-size: 4rem; font-weight: 800; text-align: center; color: var(--accent-primary); }
+.ai-interview__qa-list { margin: 24px 0; display: flex; flex-direction: column; gap: 16px; }
+.ai-interview__qa-item { padding: 16px; background: var(--bg-secondary); border-radius: var(--radius); }
+.ai-interview__qa-item h4 { font-size: 0.875rem; font-weight: 500; color: var(--text-primary); margin-bottom: 8px; }
+.ai-interview__qa-answer { font-size: 0.8125rem; color: var(--text-secondary); margin-bottom: 8px; font-style: italic; }
+.ai-interview__qa-score { font-size: 0.75rem; font-weight: 600; }
+.ai-interview__qa-feedback { font-size: 0.8125rem; color: var(--text-secondary); margin-top: 8px; padding: 8px; background: var(--bg-tertiary); border-radius: var(--radius-sm); }

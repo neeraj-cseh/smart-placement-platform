@@ -1,11 +1,19 @@
+import logging
+import os
+import subprocess
+import sys
+import tempfile
+import time
+import requests
 from datetime import timedelta
 
+from django.db.models import Count, Q
+from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.db.models import Count, Q
-from django.utils import timezone
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
+
 from accounts.models import User, UserProfile
 from .models import (
     ActivityEvent,
@@ -18,11 +26,14 @@ from .models import (
     UserAnswer,
     Test,
     TestAttempt,
+    CodeSubmission,
+    InterviewSession,
+    InterviewQA,
 )
-from .serializers import TrackSerializer, TopicSerializer, QuestionSerializer, TestSerializer
+from .serializers import TrackSerializer, TopicSerializer, QuestionSerializer, TestSerializer, TestSummarySerializer, CodeSubmissionSerializer, InterviewSessionSerializer
 from .bootstrap import COMPANY_CATALOG, ensure_platform_catalog, ensure_user_preparation_data
-import os
-import requests
+
+logger = logging.getLogger(__name__)
 
 
 def percentage(part, total):
@@ -72,6 +83,54 @@ def company_catalog_for(name):
     })
 
 
+def difficulty_mix_for_questions(questions):
+    mix = {"easy": 0, "medium": 0, "hard": 0}
+    for question in questions:
+        mix[question.difficulty] = mix.get(question.difficulty, 0) + 1
+    return mix
+
+
+def test_sections_for(test):
+    sections = []
+    for topic in test.topics.all().order_by("track__name", "order", "name"):
+        sections.append({
+            "id": topic.id,
+            "name": topic.name,
+            "track": topic.track.name if topic.track else "General",
+            "question_count": test.questions.filter(topic=topic).count(),
+        })
+    return sections
+
+
+def test_payload(test, latest_attempt=None, best_attempt=None, attempt_count=0):
+    questions = list(test.questions.select_related("topic", "topic__track").all())
+    total_questions = len(questions)
+    duration = max(1, test.duration_minutes or 1)
+    return {
+        "id": test.id,
+        "name": test.name,
+        "description": test.description,
+        "duration_minutes": duration,
+        "question_count": total_questions,
+        "topic_count": test.topics.count(),
+        "sections": test_sections_for(test),
+        "difficulty_mix": difficulty_mix_for_questions(questions),
+        "marks_per_question": 1,
+        "total_marks": total_questions,
+        "passing_score": 60,
+        "pace_seconds_per_question": round((duration * 60) / total_questions) if total_questions else 0,
+        "last_score": percentage(latest_attempt.score, latest_attempt.total_questions) if latest_attempt else None,
+        "best_score": percentage(best_attempt.score, best_attempt.total_questions) if best_attempt else None,
+        "last_completed_at": latest_attempt.completed_at.isoformat() if latest_attempt and latest_attempt.completed_at else None,
+        "attempt_count": attempt_count,
+        "instructions": [
+            "Answer every question before the timer ends.",
+            "Use the question palette to revisit unanswered or marked questions.",
+            "The test auto-submits when the timer reaches zero.",
+        ],
+    }
+
+
 def admin_relative_time(moment, now):
     if not moment:
         return ""
@@ -90,28 +149,77 @@ def admin_relative_time(moment, now):
     return f"{seconds // 86400} days ago"
 
 
-def difficulty_mix(topic):
-    counts = {"easy": 0, "medium": 0, "hard": 0}
-    for row in topic.questions.values("difficulty").annotate(total=Count("id")):
-        counts[row["difficulty"]] = row["total"]
-    return counts
-
-
-def topic_accuracy_for_user(user, topic):
-    answers = UserAnswer.objects.filter(user=user, question__topic=topic)
-    total = answers.count()
-    correct = answers.filter(is_correct=True).count()
+def topic_accuracy_for_user(user, topic_id, answer_stats):
+    stats = answer_stats.get(topic_id, {"total": 0, "correct": 0})
     return {
-        "attempts": total,
-        "correct": correct,
-        "accuracy": percentage(correct, total),
+        "attempts": stats["total"],
+        "correct": stats["correct"],
+        "accuracy": percentage(stats["correct"], stats["total"]),
     }
 
 
-class TrackListView(APIView):
+class HealthView(APIView):
+    permission_classes = []
+
+    def get(self, request):
+        return Response({
+            "status": "healthy",
+            "version": "1.0.0",
+            "debug": os.getenv("DEBUG", "False") == "True",
+        })
+
+
+class LandingView(APIView):
+    permission_classes = [AllowAny]
+
     def get(self, request):
         ensure_platform_catalog()
-        tracks = Track.objects.all()
+        track_count = Track.objects.filter(topics__is_active=True).distinct().count()
+        topic_count = Topic.objects.filter(is_active=True).count()
+        question_count = Question.objects.count()
+        test_count = Test.objects.count()
+
+        return Response({
+            "brand": {
+                "name": "PrepSmart",
+                "initials": "PS",
+            },
+            "hero": {
+                "title": "PrepSmart",
+                "eyebrow": "Placement readiness platform",
+                "subtitle": "A backend-driven preparation workspace for learning paths, mock tests, coding practice, interview drills, analytics, and company readiness.",
+                "primary_action": {"label": "Start preparing", "href": "/signup"},
+                "secondary_action": {"label": "Sign in", "href": "/login"},
+            },
+            "metrics": [
+                {"label": "Learning tracks", "value": track_count},
+                {"label": "Active topics", "value": topic_count},
+                {"label": "Practice questions", "value": question_count},
+                {"label": "Mock tests", "value": test_count},
+            ],
+            "features": [
+                {"id": "learning", "title": "Structured learning", "description": "Track-by-track preparation with topic progress, checkpoints, and focus queues."},
+                {"id": "tests", "title": "Realistic mock tests", "description": "Timed tests with sections, question palettes, auto-submit, and score history."},
+                {"id": "code", "title": "Code execution", "description": "Run Python code with stdin, output, errors, execution time, and saved submissions."},
+                {"id": "analytics", "title": "Progress analytics", "description": "Backend-calculated accuracy, weak topics, weekly momentum, and test history."},
+                {"id": "companies", "title": "Company readiness", "description": "Target company roles, official portals, eligibility notes, and readiness tracking."},
+                {"id": "admin", "title": "Admin management", "description": "Manage tracks, topics, questions, tests, users, and company targets from one console."},
+            ],
+            "feature_heading": "Platform modules",
+            "workflow": [
+                {"step": "1", "title": "Set your profile", "description": "Add academic and role details so preparation data is personalized."},
+                {"step": "2", "title": "Follow the path", "description": "Complete topics and practice questions from backend-managed content."},
+                {"step": "3", "title": "Take mocks", "description": "Use timed tests and analytics to close weak areas before interviews."},
+            ],
+        })
+
+
+class TrackListView(APIView):
+    permission_classes = []
+
+    def get(self, request):
+        ensure_platform_catalog()
+        tracks = Track.objects.all().order_by('name')
         serializer = TrackSerializer(tracks, many=True)
         return Response(serializer.data)
 
@@ -308,26 +416,26 @@ class TopicByTrackView(APIView):
         ensure_user_preparation_data(request.user)
         topics = Topic.objects.filter(track_id=track_id).order_by('order')
 
-        response_data = []
-
-        for topic in topics:
-            progress = UserTopicProgress.objects.filter(
+        completed_topic_ids = set(
+            UserTopicProgress.objects.filter(
                 user=request.user,
-                topic=topic,
                 is_completed=True
-            ).first()
+            ).values_list('topic_id', flat=True)
+        )
 
+        response_data = []
+        for topic in topics:
             response_data.append({
                 "id": topic.id,
                 "name": topic.name,
                 "description": topic.description,
                 "order": topic.order,
-                "is_completed": True if progress else False
+                "is_completed": topic.id in completed_topic_ids
             })
 
         return Response(response_data)
 
-# ✅ NEW
+
 class CompleteTopicView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -336,7 +444,7 @@ class CompleteTopicView(APIView):
         try:
             topic = Topic.objects.get(id=topic_id, is_active=True)
         except Topic.DoesNotExist:
-            return Response({"error": "Topic not found"}, status=404)
+            return Response({"error": "Topic not found"}, status=status.HTTP_404_NOT_FOUND)
 
         progress, created = UserTopicProgress.objects.get_or_create(
             user=request.user,
@@ -373,7 +481,7 @@ class TopicProgressUpdateView(APIView):
         try:
             topic = Topic.objects.get(id=topic_id, is_active=True)
         except Topic.DoesNotExist:
-            return Response({"error": "Topic not found"}, status=404)
+            return Response({"error": "Topic not found"}, status=status.HTTP_404_NOT_FOUND)
 
         raw_value = request.data.get("is_completed")
         if isinstance(raw_value, bool):
@@ -381,7 +489,7 @@ class TopicProgressUpdateView(APIView):
         elif isinstance(raw_value, str) and raw_value.lower() in ["true", "false", "1", "0", "yes", "no"]:
             is_completed = raw_value.lower() in ["true", "1", "yes"]
         else:
-            return Response({"error": "is_completed must be a boolean."}, status=400)
+            return Response({"error": "is_completed must be a boolean."}, status=status.HTTP_400_BAD_REQUEST)
 
         progress, created = UserTopicProgress.objects.get_or_create(
             user=request.user,
@@ -408,7 +516,8 @@ class TopicProgressUpdateView(APIView):
             "is_completed": progress.is_completed,
             "completed_at": progress.completed_at,
         })
-    
+
+
 class TrackProgressView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -431,14 +540,18 @@ class TrackProgressView(APIView):
             "completed_topics": completed_topics,
             "progress_percentage": round(progress, 2)
         })
-    
+
+
 class QuestionByTopicView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, topic_id):
         ensure_platform_catalog()
-        questions = Question.objects.filter(topic_id=topic_id)
+        questions = Question.objects.filter(topic_id=topic_id).order_by('difficulty', 'id')
         serializer = QuestionSerializer(questions, many=True)
         return Response(serializer.data)
-    
+
+
 class SubmitAnswerView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -446,14 +559,18 @@ class SubmitAnswerView(APIView):
         ensure_user_preparation_data(request.user)
         user_answer = request.data.get("answer")
 
+        if not user_answer or user_answer.upper() not in ["A", "B", "C", "D"]:
+            return Response({"error": "Answer must be one of A, B, C, or D."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user_answer = user_answer.upper()
+
         try:
             question = Question.objects.get(id=question_id)
         except Question.DoesNotExist:
-            return Response({"error": "Question not found"}, status=404)
+            return Response({"error": "Question not found"}, status=status.HTTP_404_NOT_FOUND)
 
         is_correct = (user_answer == question.correct_answer)
 
-        # ✅ SAVE USER ANSWER
         UserAnswer.objects.create(
             user=request.user,
             question=question,
@@ -462,55 +579,105 @@ class SubmitAnswerView(APIView):
         )
 
         return Response({
-            "correct": is_correct
+            "correct": is_correct,
+            "correct_answer": question.correct_answer,
         })
-    
+
+
 class WeakTopicView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         ensure_user_preparation_data(request.user)
-        topics = Topic.objects.all()
+
+        answer_stats = {}
+        for row in UserAnswer.objects.filter(user=request.user).values("question__topic_id").annotate(
+            total=Count("id"),
+            correct=Count("id", filter=Q(is_correct=True)),
+        ):
+            answer_stats[row["question__topic_id"]] = {
+                "total": row["total"],
+                "correct": row["correct"],
+            }
 
         weak_topics = []
-
-        for topic in topics:
-            total = UserAnswer.objects.filter(
-                user=request.user,
-                question__topic=topic
-            ).count()
-
-            if total == 0:
+        for topic_id, stats in answer_stats.items():
+            if stats["total"] == 0:
                 continue
-
-            correct = UserAnswer.objects.filter(
-                user=request.user,
-                question__topic=topic,
-                is_correct=True
-            ).count()
-
-            accuracy = (correct / total) * 100
-
+            accuracy = percentage(stats["correct"], stats["total"])
             if accuracy < 50:
-                weak_topics.append({
-                    "topic": topic.name,
-                    "accuracy": round(accuracy, 2)
-                })
+                try:
+                    topic = Topic.objects.get(id=topic_id)
+                    weak_topics.append({
+                        "id": topic.id,
+                        "topic": topic.name,
+                        "track": topic.track.name if topic.track else "General",
+                        "accuracy": round(accuracy, 2),
+                    })
+                except Topic.DoesNotExist:
+                    continue
 
+        weak_topics.sort(key=lambda x: x["accuracy"])
         return Response(weak_topics)
-    
+
+
+class TestListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        ensure_user_preparation_data(request.user)
+        tests = Test.objects.prefetch_related("topics", "questions").all().order_by('name')
+
+        latest_attempts = {}
+        best_attempts = {}
+        attempt_counts = {}
+        for attempt in TestAttempt.objects.filter(
+            user=request.user,
+            completed_at__isnull=False,
+            total_questions__gt=0,
+        ).select_related("test").order_by("test_id", "-completed_at"):
+            attempt_counts[attempt.test_id] = attempt_counts.get(attempt.test_id, 0) + 1
+            latest_attempts.setdefault(attempt.test_id, attempt)
+            current_best = best_attempts.get(attempt.test_id)
+            if not current_best or percentage(attempt.score, attempt.total_questions) > percentage(current_best.score, current_best.total_questions):
+                best_attempts[attempt.test_id] = attempt
+
+        payload = [
+            test_payload(
+                test,
+                latest_attempt=latest_attempts.get(test.id),
+                best_attempt=best_attempts.get(test.id),
+                attempt_count=attempt_counts.get(test.id, 0),
+            )
+            for test in tests
+        ]
+
+        return Response({
+            "summary": {
+                "test_count": len(payload),
+                "total_questions": sum(item["question_count"] for item in payload),
+                "completed_attempts": sum(item["attempt_count"] for item in payload),
+                "average_duration": round(sum(item["duration_minutes"] for item in payload) / len(payload)) if payload else 0,
+            },
+            "tests": payload,
+        })
+
+
 class TestDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, test_id):
         ensure_platform_catalog()
         try:
             test = Test.objects.get(id=test_id)
         except Test.DoesNotExist:
-            return Response({"error": "Test not found"}, status=404)
+            return Response({"error": "Test not found"}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = TestSerializer(test)
-        return Response(serializer.data)
+        data = serializer.data
+        data.update(test_payload(test))
+        return Response(data)
 
-from rest_framework.permissions import IsAuthenticated
 
 class StartTestView(APIView):
     permission_classes = [IsAuthenticated]
@@ -520,7 +687,7 @@ class StartTestView(APIView):
         try:
             test = Test.objects.get(id=test_id)
         except Test.DoesNotExist:
-            return Response({"error": "Test not found"}, status=404)
+            return Response({"error": "Test not found"}, status=status.HTTP_404_NOT_FOUND)
 
         attempt = TestAttempt.objects.create(
             user=request.user,
@@ -531,10 +698,12 @@ class StartTestView(APIView):
         return Response({
             "message": "Test started",
             "attempt_id": attempt.id,
-            "total_questions": attempt.total_questions
+            "total_questions": attempt.total_questions,
+            "duration_minutes": test.duration_minutes,
+            "started_at": attempt.started_at.isoformat() if attempt.started_at else None,
+            "expires_at": (attempt.started_at + timedelta(minutes=test.duration_minutes)).isoformat() if attempt.started_at else None,
         })
 
-from django.utils import timezone
 
 class SubmitTestView(APIView):
     permission_classes = [IsAuthenticated]
@@ -547,151 +716,168 @@ class SubmitTestView(APIView):
         try:
             attempt = TestAttempt.objects.get(id=attempt_id, user=request.user)
         except TestAttempt.DoesNotExist:
-            return Response({"error": "Invalid attempt"}, status=404)
+            return Response({"error": "Invalid attempt"}, status=status.HTTP_404_NOT_FOUND)
 
+        if attempt.completed_at:
+            return Response({"error": "Test already submitted"}, status=status.HTTP_400_BAD_REQUEST)
+
+        questions = list(attempt.test.questions.select_related("topic").all())
+        question_ids = [question.id for question in questions]
         score = 0
         detailed_result = []
 
-        for q_id, user_ans in answers.items():
-            try:
-                question = Question.objects.get(id=q_id)
-            except Question.DoesNotExist:
-                continue
+        for question in questions:
+            user_ans = answers.get(str(question.id), answers.get(question.id, ""))
+            if user_ans is None:
+                user_ans = ""
+            user_ans = str(user_ans).upper().strip()
 
-            is_correct = (user_ans == question.correct_answer)
+            is_correct = (user_ans.upper() == question.correct_answer.upper())
 
             if is_correct:
                 score += 1
 
             detailed_result.append({
-                "question_id": q_id,
+                "question_id": question.id,
+                "topic": question.topic.name if question.topic else "General",
+                "question_text": question.question_text,
                 "your_answer": user_ans,
                 "correct_answer": question.correct_answer,
-                "is_correct": is_correct
+                "is_correct": is_correct,
+                "is_unanswered": not bool(user_ans),
             })
 
         attempt.score = score
         attempt.completed_at = timezone.now()
         attempt.save()
 
+        ActivityEvent.objects.create(
+            user=request.user,
+            event_type="Mock",
+            title=f"Completed {attempt.test.name} with {percentage(score, attempt.total_questions)}%",
+            occurred_at=timezone.now(),
+            metadata={"test_id": attempt.test.id, "score": score, "total": attempt.total_questions},
+        )
+
         return Response({
             "score": score,
             "total": attempt.total_questions,
-            "results": detailed_result
+            "percentage": percentage(score, attempt.total_questions),
+            "correct": score,
+            "incorrect": len([result for result in detailed_result if result["your_answer"] and not result["is_correct"]]),
+            "unanswered": len([result for result in detailed_result if result["is_unanswered"]]),
+            "submitted_at": attempt.completed_at.isoformat() if attempt.completed_at else None,
+            "results": detailed_result,
         })
-    
+
+
 class TopicAccuracyView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         ensure_user_preparation_data(request.user)
-        topics = Topic.objects.all()
-        result = []
 
-        for topic in topics:
-            total = UserAnswer.objects.filter(
-                user=request.user,
-                question__topic=topic
-            ).count()
+        answer_stats = {}
+        for row in UserAnswer.objects.filter(user=request.user).values("question__topic_id").annotate(
+            total=Count("id"),
+            correct=Count("id", filter=Q(is_correct=True)),
+        ):
+            answer_stats[row["question__topic_id"]] = {
+                "total": row["total"],
+                "correct": row["correct"],
+            }
 
-            if total == 0:
+        topic_data = []
+        for topic in Topic.objects.filter(is_active=True).select_related("track"):
+            stats = answer_stats.get(topic.id, {"total": 0, "correct": 0})
+            if stats["total"] == 0:
                 continue
 
-            correct = UserAnswer.objects.filter(
-                user=request.user,
-                question__topic=topic,
-                is_correct=True
-            ).count()
-
-            accuracy = (correct / total) * 100
-
-            result.append({
+            accuracy = percentage(stats["correct"], stats["total"])
+            topic_data.append({
+                "id": topic.id,
                 "topic": topic.name,
-                "accuracy": round(accuracy, 2)
+                "track": topic.track.name if topic.track else "General",
+                "accuracy": round(accuracy, 2),
+                "attempts": stats["total"],
+                "correct": stats["correct"],
             })
 
-        return Response(result)
-    
+        topic_data.sort(key=lambda x: x["accuracy"])
+        return Response(topic_data)
+
+
 class OverallPerformanceView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         ensure_user_preparation_data(request.user)
-        total = UserAnswer.objects.filter(user=request.user).count()
 
-        correct = UserAnswer.objects.filter(
-            user=request.user,
-            is_correct=True
-        ).count()
+        stats = UserAnswer.objects.filter(user=request.user).aggregate(
+            total=Count("id"),
+            correct=Count("id", filter=Q(is_correct=True)),
+        )
 
-        accuracy = 0
-        if total > 0:
-            accuracy = (correct / total) * 100
+        total = stats["total"] or 0
+        correct = stats["correct"] or 0
+        accuracy = percentage(correct, total)
 
         return Response({
             "total_attempts": total,
             "correct_answers": correct,
-            "accuracy": round(accuracy, 2)
+            "accuracy": round(accuracy, 2),
         })
-    
+
+
 class AnalyticsDashboardView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         ensure_user_preparation_data(request.user)
 
-        # 🔹 Overall Performance
-        total = UserAnswer.objects.filter(user=request.user).count()
-        correct = UserAnswer.objects.filter(
-            user=request.user,
-            is_correct=True
-        ).count()
+        stats = UserAnswer.objects.filter(user=request.user).aggregate(
+            total=Count("id"),
+            correct=Count("id", filter=Q(is_correct=True)),
+        )
+        overall_accuracy = percentage(stats["correct"] or 0, stats["total"] or 0)
 
-        overall_accuracy = 0
-        if total > 0:
-            overall_accuracy = (correct / total) * 100
+        answer_stats = {}
+        for row in UserAnswer.objects.filter(user=request.user).values("question__topic_id").annotate(
+            total=Count("id"),
+            correct=Count("id", filter=Q(is_correct=True)),
+        ):
+            answer_stats[row["question__topic_id"]] = {
+                "total": row["total"],
+                "correct": row["correct"],
+            }
 
-        overall_data = {
-            "total_attempts": total,
-            "correct_answers": correct,
-            "accuracy": round(overall_accuracy, 2)
-        }
-
-        # 🔹 Topic-wise Accuracy
-        topics = Topic.objects.all()
         topic_data = []
-
-        for topic in topics:
-            t_total = UserAnswer.objects.filter(
-                user=request.user,
-                question__topic=topic
-            ).count()
-
-            if t_total == 0:
+        weak_topics = []
+        for topic in Topic.objects.filter(is_active=True).select_related("track"):
+            stats_t = answer_stats.get(topic.id, {"total": 0, "correct": 0})
+            if stats_t["total"] == 0:
                 continue
 
-            t_correct = UserAnswer.objects.filter(
-                user=request.user,
-                question__topic=topic,
-                is_correct=True
-            ).count()
-
-            t_accuracy = (t_correct / t_total) * 100
-
-            topic_data.append({
+            accuracy = percentage(stats_t["correct"], stats_t["total"])
+            entry = {
+                "id": topic.id,
                 "topic": topic.name,
-                "accuracy": round(t_accuracy, 2)
-            })
+                "track": topic.track.name if topic.track else "General",
+                "accuracy": round(accuracy, 2),
+            }
+            topic_data.append(entry)
 
-        # 🔹 Weak Topics (<50%)
-        weak_topics = [
-            t for t in topic_data if t["accuracy"] < 50
-        ]
+            if accuracy < 50:
+                weak_topics.append(entry)
 
         return Response({
-            "overall": overall_data,
+            "overall": {
+                "total_attempts": stats["total"] or 0,
+                "correct_answers": stats["correct"] or 0,
+                "accuracy": round(overall_accuracy, 2),
+            },
             "topics": topic_data,
-            "weak_topics": weak_topics
+            "weak_topics": weak_topics,
         })
 
 
@@ -700,8 +886,28 @@ class PracticeDashboardView(APIView):
 
     def get(self, request):
         ensure_user_preparation_data(request.user)
-        topics = Topic.objects.filter(is_active=True).select_related("track").prefetch_related("questions").order_by("track__name", "order", "id")
-        tests = Test.objects.prefetch_related("topics", "questions").order_by("name")
+
+        answer_stats = {}
+        for row in UserAnswer.objects.filter(user=request.user).values("question__topic_id").annotate(
+            total=Count("id"),
+            correct=Count("id", filter=Q(is_correct=True)),
+        ):
+            answer_stats[row["question__topic_id"]] = {
+                "total": row["total"],
+                "correct": row["correct"],
+            }
+
+        question_totals = {
+            row["topic_id"]: row["total"]
+            for row in Question.objects.values("topic_id").annotate(total=Count("id"))
+        }
+
+        difficulty_counts = {}
+        for row in Question.objects.values("topic_id", "difficulty").annotate(total=Count("id")):
+            topic_mix = difficulty_counts.setdefault(row["topic_id"], {"easy": 0, "medium": 0, "hard": 0})
+            topic_mix[row["difficulty"]] = row["total"]
+
+        topics = Topic.objects.filter(is_active=True).select_related("track").order_by("track__name", "order", "id")
 
         topic_cards = []
         weak_candidates = []
@@ -710,8 +916,8 @@ class PracticeDashboardView(APIView):
         correct_attempts = UserAnswer.objects.filter(user=request.user, is_correct=True).count()
 
         for topic in topics:
-            stats = topic_accuracy_for_user(request.user, topic)
-            question_count = topic.questions.count()
+            stats = topic_accuracy_for_user(request.user, topic.id, answer_stats)
+            question_count = question_totals.get(topic.id, 0)
             total_questions += question_count
             priority = "high" if stats["attempts"] and stats["accuracy"] < 55 else "medium" if stats["accuracy"] < 70 else "steady"
             card = {
@@ -720,7 +926,7 @@ class PracticeDashboardView(APIView):
                 "track": topic.track.name if topic.track else "General",
                 "description": topic.description,
                 "question_count": question_count,
-                "difficulty_mix": difficulty_mix(topic),
+                "difficulty_mix": difficulty_counts.get(topic.id, {"easy": 0, "medium": 0, "hard": 0}),
                 "attempts": stats["attempts"],
                 "accuracy": stats["accuracy"],
                 "priority": priority,
@@ -741,13 +947,18 @@ class PracticeDashboardView(APIView):
             ),
         )[:6]
 
+        tests = Test.objects.all().order_by("name")
+        test_attempts_lookup = {}
+        for attempt in TestAttempt.objects.filter(
+            user=request.user,
+            completed_at__isnull=False,
+        ).order_by("test_id", "-completed_at"):
+            if attempt.test_id not in test_attempts_lookup:
+                test_attempts_lookup[attempt.test_id] = attempt
+
         test_payload = []
         for test in tests:
-            latest_attempt = TestAttempt.objects.filter(
-                user=request.user,
-                test=test,
-                completed_at__isnull=False,
-            ).order_by("-completed_at").first()
+            latest_attempt = test_attempts_lookup.get(test.id)
             test_payload.append({
                 "id": test.id,
                 "name": test.name,
@@ -790,12 +1001,6 @@ class PracticeDashboardView(APIView):
             "tests": test_payload,
             "sample_topic": sample_topic,
             "sample_questions": sample_questions,
-            "daily_drills": [
-                {"label": "Aptitude sprint", "duration": "20 min", "target": "15 questions", "tone": "amber"},
-                {"label": "DSA implementation", "duration": "30 min", "target": "2 problems", "tone": "cyan"},
-                {"label": "SQL accuracy", "duration": "18 min", "target": "8 queries", "tone": "green"},
-                {"label": "Project explanation", "duration": "12 min", "target": "1 story", "tone": "violet"},
-            ],
         })
 
 
@@ -807,19 +1012,28 @@ class FullAnalyticsView(APIView):
         today = timezone.localdate()
         answers = UserAnswer.objects.filter(user=request.user)
         attempts = TestAttempt.objects.filter(user=request.user, completed_at__isnull=False, total_questions__gt=0)
-        total_answers = answers.count()
-        correct_answers = answers.filter(is_correct=True).count()
 
+        answer_stats = {}
+        for row in answers.values("question__topic_id").annotate(
+            total=Count("id"),
+            correct=Count("id", filter=Q(is_correct=True)),
+        ):
+            answer_stats[row["question__topic_id"]] = {
+                "total": row["total"],
+                "correct": row["correct"],
+            }
+
+        topics_qs = Topic.objects.filter(is_active=True).select_related("track").order_by("track__name", "order", "id")
         topic_payload = []
-        for topic in Topic.objects.filter(is_active=True).select_related("track").order_by("track__name", "order", "id"):
-            stats = topic_accuracy_for_user(request.user, topic)
+        for topic in topics_qs:
+            stats = answer_stats.get(topic.id, {"total": 0, "correct": 0})
             topic_payload.append({
                 "topic": topic.name,
                 "track": topic.track.name if topic.track else "General",
-                "accuracy": stats["accuracy"],
-                "attempts": stats["attempts"],
+                "accuracy": percentage(stats["correct"], stats["total"]),
+                "attempts": stats["total"],
                 "correct": stats["correct"],
-                "tone": tone_for_progress(stats["accuracy"] if stats["attempts"] else 0),
+                "tone": tone_for_progress(percentage(stats["correct"], stats["total"]) if stats["total"] else 0),
             })
 
         track_payload = []
@@ -863,6 +1077,9 @@ class FullAnalyticsView(APIView):
             item for item in topic_payload
             if item["attempts"] > 0 and item["accuracy"] < 60
         ][:6]
+
+        total_answers = answers.count()
+        correct_answers = answers.filter(is_correct=True).count()
 
         return Response({
             "summary": {
@@ -958,7 +1175,10 @@ class CompanyTargetUpdateView(APIView):
         )
 
         if "readiness" in request.data:
-            target.readiness_percentage = bounded_percentage(request.data.get("readiness"))
+            try:
+                target.readiness_percentage = bounded_percentage(int(request.data.get("readiness", 0)))
+            except (ValueError, TypeError):
+                pass
             target.tone = "green" if target.readiness_percentage >= 70 else "amber" if target.readiness_percentage >= 50 else "red"
         if "focus" in request.data:
             target.focus = str(request.data.get("focus", ""))[:180]
@@ -982,20 +1202,30 @@ class AdminOverviewView(APIView):
     def get(self, request):
         ensure_platform_catalog()
         now = timezone.now()
-        users = User.objects.all().order_by("-created_at")
-        user_count = users.count()
+        users = list(User.objects.all().order_by("-created_at")[:100])
+        user_ids = [user.id for user in users]
+        user_count = len(users)
 
         profile_lookup = {
             profile.user_id: profile
-            for profile in UserProfile.objects.filter(user__in=users)
+            for profile in UserProfile.objects.filter(user_id__in=user_ids)
         }
+
+        answer_counts = {}
+        for row in UserAnswer.objects.values("user_id").annotate(total=Count("id")):
+            answer_counts[row["user_id"]] = row["total"]
+
+        topic_counts = {}
+        for row in UserTopicProgress.objects.filter(is_completed=True).values("user_id").annotate(total=Count("id")):
+            topic_counts[row["user_id"]] = row["total"]
+
+        company_counts = {}
+        for row in CompanyTarget.objects.filter(is_active=True).values("user_id").annotate(total=Count("id")):
+            company_counts[row["user_id"]] = row["total"]
 
         user_payload = []
         for user in users:
             profile = profile_lookup.get(user.id)
-            completed_topics = UserTopicProgress.objects.filter(user=user, is_completed=True).count()
-            answer_count = UserAnswer.objects.filter(user=user).count()
-            company_count = CompanyTarget.objects.filter(user=user, is_active=True).count()
             profile_bits = []
             if profile and profile.branch:
                 profile_bits.append(profile.branch)
@@ -1014,19 +1244,44 @@ class AdminOverviewView(APIView):
                 "created_at": user.created_at.isoformat() if user.created_at else None,
                 "profile_summary": " / ".join(profile_bits) if profile_bits else "Profile pending",
                 "stats": {
-                    "completed_topics": completed_topics,
-                    "answers": answer_count,
-                    "company_targets": company_count,
+                    "completed_topics": topic_counts.get(user.id, 0),
+                    "answers": answer_counts.get(user.id, 0),
+                    "company_targets": company_counts.get(user.id, 0),
                 },
             })
 
+        tracks_qs = Track.objects.all().order_by("name")
+        track_question_counts = {}
+        for row in Question.objects.values("topic__track_id").annotate(total=Count("id")):
+            track_question_counts[row["topic__track_id"]] = row["total"]
+
+        track_completion_counts = {}
+        for row in UserTopicProgress.objects.filter(is_completed=True).values("topic__track_id").annotate(total=Count("id")):
+            track_completion_counts[row["topic__track_id"]] = row["total"]
+
+        topic_question_counts = {}
+        for row in Question.objects.values("topic_id").annotate(total=Count("id")):
+            topic_question_counts[row["topic_id"]] = row["total"]
+
         track_payload = []
-        for track in Track.objects.all().order_by("name"):
+        for track in tracks_qs:
             topics = track.topics.filter(is_active=True)
             topic_count = topics.count()
-            question_count = Question.objects.filter(topic__track=track).count()
+            question_count = track_question_counts.get(track.id, 0)
             completion_total = topic_count * user_count
-            completed_total = UserTopicProgress.objects.filter(topic__track=track, is_completed=True).count()
+            completed_total = track_completion_counts.get(track.id, 0)
+
+            topics_data = []
+            for topic in topics.order_by("order", "name"):
+                topics_data.append({
+                    "id": topic.id,
+                    "name": topic.name,
+                    "description": topic.description,
+                    "order": topic.order,
+                    "is_active": topic.is_active,
+                    "question_count": topic_question_counts.get(topic.id, 0),
+                })
+
             track_payload.append({
                 "id": track.id,
                 "name": track.name,
@@ -1034,17 +1289,7 @@ class AdminOverviewView(APIView):
                 "topic_count": topic_count,
                 "question_count": question_count,
                 "completion_rate": percentage(completed_total, completion_total),
-                "topics": [
-                    {
-                        "id": topic.id,
-                        "name": topic.name,
-                        "description": topic.description,
-                        "order": topic.order,
-                        "is_active": topic.is_active,
-                        "question_count": topic.questions.count(),
-                    }
-                    for topic in track.topics.all().order_by("order", "name")
-                ],
+                "topics": topics_data,
             })
 
         activity_payload = [
@@ -1069,14 +1314,30 @@ class AdminOverviewView(APIView):
                 "tone": target.tone,
                 "is_active": target.is_active,
             }
-            for target in CompanyTarget.objects.select_related("user").order_by("user__email", "order", "name")
+            for target in CompanyTarget.objects.select_related("user").order_by("user__email", "order", "name")[:100]
         ]
+
+        question_payload = [
+            {
+                "id": question.id,
+                "topic_id": question.topic_id,
+                "topic": question.topic.name if question.topic else "General",
+                "track": question.topic.track.name if question.topic and question.topic.track else "General",
+                "question_text": question.question_text,
+                "difficulty": question.difficulty,
+                "correct_answer": question.correct_answer,
+            }
+            for question in Question.objects.select_related("topic", "topic__track").order_by("-created_at", "-id")[:120]
+        ]
+
+        tests_qs = Test.objects.prefetch_related("topics", "questions").all().order_by("name")
+        tests_payload = [test_payload(test) for test in tests_qs]
 
         return Response({
             "summary": {
-                "users": user_count,
-                "active_users": users.filter(is_active=True).count(),
-                "admins": users.filter(is_staff=True).count(),
+                "users": User.objects.count(),
+                "active_users": User.objects.filter(is_active=True).count(),
+                "admins": User.objects.filter(is_staff=True).count(),
                 "tracks": Track.objects.count(),
                 "topics": Topic.objects.filter(is_active=True).count(),
                 "questions": Question.objects.count(),
@@ -1086,6 +1347,8 @@ class AdminOverviewView(APIView):
             },
             "users": user_payload,
             "tracks": track_payload,
+            "questions": question_payload,
+            "tests": tests_payload,
             "company_targets": company_target_payload,
             "activity": activity_payload,
         })
@@ -1178,7 +1441,86 @@ class AdminContentView(APIView):
                 "track_id": track.id,
             }, status=status.HTTP_201_CREATED)
 
-        return Response({"error": "type must be either track or topic."}, status=status.HTTP_400_BAD_REQUEST)
+        if item_type == "question":
+            try:
+                topic = Topic.objects.get(id=request.data.get("topic_id"))
+            except (Topic.DoesNotExist, ValueError, TypeError):
+                return Response({"error": "Valid topic_id is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+            question_text = str(request.data.get("question_text", "")).strip()
+            options = {
+                "option_a": str(request.data.get("option_a", "")).strip(),
+                "option_b": str(request.data.get("option_b", "")).strip(),
+                "option_c": str(request.data.get("option_c", "")).strip(),
+                "option_d": str(request.data.get("option_d", "")).strip(),
+            }
+            correct_answer = str(request.data.get("correct_answer", "")).strip().upper()
+            difficulty = str(request.data.get("difficulty", "medium")).strip().lower()
+
+            if not question_text or not all(options.values()):
+                return Response({"error": "Question text and all four options are required."}, status=status.HTTP_400_BAD_REQUEST)
+            if correct_answer not in ["A", "B", "C", "D"]:
+                return Response({"error": "correct_answer must be A, B, C, or D."}, status=status.HTTP_400_BAD_REQUEST)
+            if difficulty not in ["easy", "medium", "hard"]:
+                return Response({"error": "difficulty must be easy, medium, or hard."}, status=status.HTTP_400_BAD_REQUEST)
+
+            question = Question.objects.create(
+                topic=topic,
+                question_text=question_text,
+                correct_answer=correct_answer,
+                difficulty=difficulty,
+                **options,
+            )
+
+            return Response({
+                "message": "Question created",
+                "id": question.id,
+                "topic_id": topic.id,
+            }, status=status.HTTP_201_CREATED)
+
+        if item_type == "test":
+            name = str(request.data.get("name", "")).strip()
+            description = str(request.data.get("description", "")).strip()
+            if not name:
+                return Response({"error": "Test name is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+            try:
+                duration_minutes = max(1, int(request.data.get("duration_minutes") or 30))
+            except (ValueError, TypeError):
+                duration_minutes = 30
+
+            test, created = Test.objects.get_or_create(
+                name=name,
+                defaults={
+                    "description": description,
+                    "duration_minutes": duration_minutes,
+                },
+            )
+            if not created:
+                test.description = description or test.description
+                test.duration_minutes = duration_minutes
+                test.save(update_fields=["description", "duration_minutes"])
+
+            topic_ids = request.data.get("topic_ids") or []
+            question_ids = request.data.get("question_ids") or []
+            topics = Topic.objects.filter(id__in=topic_ids, is_active=True)
+            questions = Question.objects.filter(id__in=question_ids)
+            if not questions.exists() and topics.exists():
+                questions = Question.objects.filter(topic__in=topics).order_by("topic__order", "id")[:20]
+
+            if topics.exists():
+                test.topics.set(topics)
+            if questions.exists():
+                test.questions.set(questions)
+
+            return Response({
+                "message": "Test created" if created else "Test updated",
+                "id": test.id,
+                "name": test.name,
+                "question_count": test.questions.count(),
+            }, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
+
+        return Response({"error": "type must be track, topic, question, or test."}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AdminTrackDetailView(APIView):
@@ -1238,8 +1580,11 @@ class AdminTopicDetailView(APIView):
             topic.description = str(request.data.get("description", "")).strip()
             changed_fields.append("description")
         if "order" in request.data:
-            topic.order = int(request.data.get("order") or 0)
-            changed_fields.append("order")
+            try:
+                topic.order = int(request.data.get("order") or 0)
+                changed_fields.append("order")
+            except (ValueError, TypeError):
+                return Response({"error": "Order must be a number."}, status=status.HTTP_400_BAD_REQUEST)
         if "is_active" in request.data:
             topic.is_active = bool(request.data.get("is_active"))
             changed_fields.append("is_active")
@@ -1283,11 +1628,16 @@ class AdminCompanyTargetView(APIView):
         if not name:
             return Response({"error": "Company name is required."}, status=status.HTTP_400_BAD_REQUEST)
 
+        try:
+            readiness = int(request.data.get("readiness", 0))
+        except (ValueError, TypeError):
+            readiness = 0
+
         target, created = CompanyTarget.objects.get_or_create(
             user=user,
             name=name,
             defaults={
-                "readiness_percentage": bounded_percentage(request.data.get("readiness", 0)),
+                "readiness_percentage": bounded_percentage(readiness),
                 "focus": str(request.data.get("focus", "")).strip()[:180],
                 "tone": "slate",
                 "order": CompanyTarget.objects.filter(user=user).count() + 1,
@@ -1297,7 +1647,10 @@ class AdminCompanyTargetView(APIView):
 
         if not created:
             target.is_active = True
-            target.readiness_percentage = bounded_percentage(request.data.get("readiness", target.readiness_percentage))
+            try:
+                target.readiness_percentage = bounded_percentage(int(request.data.get("readiness", target.readiness_percentage)))
+            except (ValueError, TypeError):
+                pass
             target.focus = str(request.data.get("focus", target.focus)).strip()[:180]
 
         target.tone = "green" if target.readiness_percentage >= 70 else "amber" if target.readiness_percentage >= 50 else "red"
@@ -1316,7 +1669,10 @@ class AdminCompanyTargetDetailView(APIView):
             return Response({"error": "Company target not found"}, status=status.HTTP_404_NOT_FOUND)
 
         if "readiness" in request.data:
-            target.readiness_percentage = bounded_percentage(request.data.get("readiness"))
+            try:
+                target.readiness_percentage = bounded_percentage(int(request.data.get("readiness", 0)))
+            except (ValueError, TypeError):
+                pass
             target.tone = "green" if target.readiness_percentage >= 70 else "amber" if target.readiness_percentage >= 50 else "red"
         if "focus" in request.data:
             target.focus = str(request.data.get("focus", "")).strip()[:180]
@@ -1335,7 +1691,8 @@ class AdminCompanyTargetDetailView(APIView):
         target.is_active = False
         target.save(update_fields=["is_active"])
         return Response({"message": "Company target archived", "id": target.id, "is_active": False})
-    
+
+
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 class AIExplanationView(APIView):
@@ -1348,7 +1705,10 @@ class AIExplanationView(APIView):
         try:
             question = Question.objects.get(id=question_id)
         except Question.DoesNotExist:
-            return Response({"error": "Question not found"}, status=404)
+            return Response({"error": "Question not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        if not GROQ_API_KEY:
+            return Response({"error": "AI service is not configured."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
         prompt = f"""
         Question: {question.question_text}
@@ -1371,25 +1731,379 @@ class AIExplanationView(APIView):
         }
 
         data = {
-            "model": "llama-3.1-8b-instant",   # ✅ updated
+            "model": "llama-3.1-8b-instant",
             "messages": [
                 {"role": "user", "content": prompt}
             ],
             "temperature": 0.7
         }
 
-        response = requests.post(url, headers=headers, json=data)
-        result = response.json()
+        try:
+            response = requests.post(url, headers=headers, json=data, timeout=30)
+            response.raise_for_status()
+            result = response.json()
+        except requests.exceptions.Timeout:
+            return Response({"error": "AI request timed out. Try again later."}, status=status.HTTP_504_GATEWAY_TIMEOUT)
+        except requests.exceptions.RequestException as e:
+            logger.error(f"AI request failed: {str(e)}")
+            return Response({"error": "AI service unavailable. Try again later."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
-        print("AI RESPONSE:", result)
-
-        # ✅ SAFE extraction
-        if "choices" in result:
+        if "choices" in result and result["choices"]:
             explanation = result["choices"][0]["message"]["content"]
         else:
-            explanation = result.get("error", {}).get("message", "AI failed")
+            explanation = result.get("error", {}).get("message", "AI failed to generate a response.")
 
         return Response({
             "explanation": explanation
         })
-    
+
+
+class CodeExecuteView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        ensure_user_preparation_data(request.user)
+        code = request.data.get("code", "")
+        language = request.data.get("language", "python")
+        stdin = request.data.get("stdin", "")
+
+        if not code.strip():
+            return Response({"error": "Code cannot be empty."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if language != "python":
+            return Response({"error": "Only Python is supported."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if len(code) > 20000:
+            return Response({"error": "Code is too large for the browser runner."}, status=status.HTTP_400_BAD_REQUEST)
+
+        started = time.perf_counter()
+        try:
+            with tempfile.TemporaryDirectory(prefix="prepsmart_code_") as tmp_dir:
+                code_path = os.path.join(tmp_dir, "main.py")
+                with open(code_path, "w", encoding="utf-8") as code_file:
+                    code_file.write(code)
+
+                completed = subprocess.run(
+                    [sys.executable, code_path],
+                    input=stdin or "",
+                    capture_output=True,
+                    text=True,
+                    timeout=8,
+                    cwd=tmp_dir,
+                    check=False,
+                )
+
+            elapsed_ms = int((time.perf_counter() - started) * 1000)
+            output = completed.stdout or ""
+            error_output = completed.stderr or ""
+            code_obj = CodeSubmission.objects.create(
+                user=request.user,
+                code=code,
+                language="python",
+                output=output,
+                error_output=error_output,
+                execution_time_ms=elapsed_ms,
+                stdin=stdin,
+            )
+
+            return Response({
+                "id": code_obj.id,
+                "output": output,
+                "error": error_output,
+                "success": completed.returncode == 0,
+                "exit_code": completed.returncode,
+                "execution_time_ms": elapsed_ms,
+            })
+        except subprocess.TimeoutExpired:
+            elapsed_ms = int((time.perf_counter() - started) * 1000)
+            code_obj = CodeSubmission.objects.create(
+                user=request.user,
+                code=code,
+                language="python",
+                output="",
+                error_output="Execution timed out after 8 seconds.",
+                execution_time_ms=elapsed_ms,
+                stdin=stdin,
+            )
+            return Response({
+                "id": code_obj.id,
+                "output": "",
+                "error": code_obj.error_output,
+                "success": False,
+                "exit_code": None,
+                "execution_time_ms": elapsed_ms,
+            }, status=status.HTTP_408_REQUEST_TIMEOUT)
+        except OSError as e:
+            logger.error(f"Local code execution failed: {str(e)}")
+            return Response({"error": "Code execution failed on the local runner."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+
+class CodeWorkspaceView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        submissions = CodeSubmission.objects.filter(user=request.user).order_by("-created_at")[:8]
+        return Response({
+            "language": "python",
+            "runtime": f"Python {sys.version_info.major}.{sys.version_info.minor}",
+            "timeout_seconds": 8,
+            "starter_code": "import sys\n\ntext = sys.stdin.read().strip()\nprint(text if text else \"Ready to code\")\n",
+            "default_stdin": "",
+            "examples": [
+                {
+                    "title": "Read numbers and sum",
+                    "stdin": "4\n10 20 30 40\n",
+                    "code": "n = int(input())\nvalues = list(map(int, input().split()))\nprint(sum(values[:n]))\n",
+                },
+                {
+                    "title": "Two pointer reverse",
+                    "stdin": "placement\n",
+                    "code": "s = input().strip()\nprint(s[::-1])\n",
+                },
+                {
+                    "title": "Frequency map",
+                    "stdin": "a b a c b a\n",
+                    "code": "from collections import Counter\nwords = input().split()\nprint(dict(Counter(words)))\n",
+                },
+            ],
+            "recent_submissions": CodeSubmissionSerializer(submissions, many=True).data,
+        })
+
+
+class CodeSubmissionListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        submissions = CodeSubmission.objects.filter(user=request.user).order_by("-created_at")[:20]
+        serializer = CodeSubmissionSerializer(submissions, many=True)
+        return Response(serializer.data)
+
+
+INTERVIEW_QUESTIONS = {
+    "general": [
+        {"question": "Tell me about yourself and what motivated you to pursue a career in technology?", "area": "Introduction"},
+        {"question": "Describe a project you built that you're most proud of. What was your role and what impact did it have?", "area": "Project"},
+        {"question": "How do you approach debugging a problem you've never seen before?", "area": "Problem Solving"},
+        {"question": "What is your greatest strength as a developer and how has it helped you in your projects?", "area": "Self Awareness"},
+        {"question": "Where do you see yourself in 3 years and how does this role fit into your career plan?", "area": "Career Goals"},
+    ],
+    "technical": [
+        {"question": "Explain the difference between a process and a thread in simple terms.", "area": "OS Concepts"},
+        {"question": "What is the difference between SQL and NoSQL databases? When would you choose one over the other?", "area": "Database"},
+        {"question": "Describe how HTTP works. What happens when you type a URL in your browser?", "area": "Networking"},
+        {"question": "What is the difference between authentication and authorization? How does JWT work?", "area": "Security"},
+        {"question": "Explain RESTful API design principles. What makes a good API?", "area": "API Design"},
+    ],
+    "dsa": [
+        {"question": "How would you explain time complexity to someone who has never studied computer science?", "area": "Complexity"},
+        {"question": "When would you use a hash map over an array? Give a practical example.", "area": "Data Structures"},
+        {"question": "Describe a situation where recursion is the best approach and explain how it works.", "area": "Recursion"},
+        {"question": "How do you decide between BFS and DFS for graph traversal?", "area": "Graphs"},
+        {"question": "What is dynamic programming and when should you use it?", "area": "Dynamic Programming"},
+    ],
+}
+
+
+class InterviewConfigView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        labels = {
+            "general": ("General", "Introduction, projects, career goals"),
+            "technical": ("Technical", "OS, DBMS, networking, APIs"),
+            "dsa": ("DSA", "Data structures, algorithms, complexity"),
+        }
+        return Response({
+            "categories": [
+                {
+                    "id": key,
+                    "label": labels.get(key, (key.title(), ""))[0],
+                    "description": labels.get(key, (key.title(), ""))[1],
+                    "question_count": len(questions),
+                }
+                for key, questions in INTERVIEW_QUESTIONS.items()
+            ]
+        })
+
+
+class InterviewStartView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        ensure_user_preparation_data(request.user)
+        category = request.data.get("category", "general")
+
+        if category not in INTERVIEW_QUESTIONS:
+            return Response({"error": f"Category must be one of: {', '.join(INTERVIEW_QUESTIONS.keys())}"}, status=status.HTTP_400_BAD_REQUEST)
+
+        session = InterviewSession.objects.create(
+            user=request.user,
+            category=category,
+            total_questions=len(INTERVIEW_QUESTIONS[category]),
+        )
+
+        first_q = INTERVIEW_QUESTIONS[category][0]
+        return Response({
+            "session_id": session.id,
+            "category": category,
+            "total_questions": session.total_questions,
+            "current_question": first_q,
+            "question_index": 0,
+        })
+
+
+class InterviewNextQuestionView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        ensure_user_preparation_data(request.user)
+        session_id = request.data.get("session_id")
+
+        try:
+            session = InterviewSession.objects.get(id=session_id, user=request.user, status='active')
+        except InterviewSession.DoesNotExist:
+            return Response({"error": "Active interview session not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        questions = INTERVIEW_QUESTIONS.get(session.category, [])
+        next_idx = session.current_question_index + 1
+
+        if next_idx >= len(questions):
+            return Response({"error": "No more questions. Submit your answer or end the interview."}, status=status.HTTP_400_BAD_REQUEST)
+
+        session.current_question_index = next_idx
+        session.save()
+
+        return Response({
+            "current_question": questions[next_idx],
+            "question_index": next_idx,
+            "total_questions": session.total_questions,
+        })
+
+
+class InterviewSubmitAnswerView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        ensure_user_preparation_data(request.user)
+        session_id = request.data.get("session_id")
+        answer = request.data.get("answer", "")
+
+        if not answer.strip():
+            return Response({"error": "Answer cannot be empty."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            session = InterviewSession.objects.get(id=session_id, user=request.user, status='active')
+        except InterviewSession.DoesNotExist:
+            return Response({"error": "Active interview session not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        questions = INTERVIEW_QUESTIONS.get(session.category, [])
+        current_q = questions[session.current_question_index]
+
+        qa_pair = InterviewQA.objects.create(
+            session=session,
+            question=current_q["question"],
+            user_answer=answer,
+            score=0,
+            max_score=20,
+        )
+
+        if GROQ_API_KEY:
+            try:
+                ai_prompt = f"""Evaluate this interview answer. Give a score out of 20 and brief feedback.
+
+Question: {current_q['question']}
+Candidate's Answer: {answer}
+
+Respond with JSON: {{"score": <number>, "feedback": "<brief feedback>"}}"""
+
+                ai_response = requests.post(
+                    "https://api.groq.com/openai/v1/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {GROQ_API_KEY}",
+                        "Content-Type": "application/json",
+                    },
+                    json={
+                        "model": "llama-3.1-8b-instant",
+                        "messages": [{"role": "user", "content": ai_prompt}],
+                        "temperature": 0.5,
+                    },
+                    timeout=30,
+                )
+                ai_response.raise_for_status()
+                result = ai_response.json()
+
+                if "choices" in result and result["choices"]:
+                    import json as json_mod
+                    try:
+                        ai_text = result["choices"][0]["message"]["content"]
+                        parsed = json_mod.loads(ai_text)
+                        qa_pair.score = min(20, max(0, int(parsed.get("score", 10))))
+                        qa_pair.ai_feedback = parsed.get("feedback", "Good effort. Keep practicing.")
+                        qa_pair.save()
+                    except (json_mod.JSONDecodeError, ValueError, KeyError):
+                        qa_pair.ai_feedback = "Answer recorded. AI feedback unavailable."
+                        qa_pair.save()
+            except Exception as e:
+                logger.error(f"AI interview feedback failed: {str(e)}")
+                qa_pair.ai_feedback = "Answer recorded. AI feedback unavailable due to service issue."
+                qa_pair.save()
+
+        session.score += qa_pair.score
+        session.save()
+
+        return Response({
+            "message": "Answer submitted",
+            "score": qa_pair.score,
+            "max_score": qa_pair.max_score,
+            "feedback": qa_pair.ai_feedback,
+            "total_score": session.score,
+        })
+
+
+class InterviewEndView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        ensure_user_preparation_data(request.user)
+        session_id = request.data.get("session_id")
+
+        try:
+            session = InterviewSession.objects.get(id=session_id, user=request.user, status='active')
+        except InterviewSession.DoesNotExist:
+            return Response({"error": "Active interview session not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        session.status = 'completed'
+        session.completed_at = timezone.now()
+        session.save()
+
+        qa_pairs = InterviewQA.objects.filter(session=session)
+        total_possible = qa_pairs.count() * 20
+        final_percentage = percentage(session.score, total_possible) if total_possible > 0 else 0
+
+        return Response({
+            "message": "Interview completed",
+            "session_id": session.id,
+            "category": session.category,
+            "total_score": session.score,
+            "max_possible_score": total_possible,
+            "percentage": final_percentage,
+            "questions_answered": qa_pairs.count(),
+            "qa_pairs": [
+                {
+                    "question": qa.question,
+                    "your_answer": qa.user_answer,
+                    "score": f"{qa.score}/{qa.max_score}",
+                    "feedback": qa.ai_feedback,
+                }
+                for qa in qa_pairs
+            ],
+        })
+
+
+class InterviewHistoryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        sessions = InterviewSession.objects.filter(user=request.user).order_by("-started_at")[:10]
+        serializer = InterviewSessionSerializer(sessions, many=True)
+        return Response(serializer.data)

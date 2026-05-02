@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinLengthValidator
 
 
 class Track(models.Model):
@@ -21,23 +22,34 @@ class Topic(models.Model):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ('track', 'order', 'id')
+
     def __str__(self):
-        return f"{self.track.name} - {self.name}"
-    
+        track_name = self.track.name if self.track else "General"
+        return f"{track_name} - {self.name}"
+
+
 class UserTopicProgress(models.Model):
-    user = models.ForeignKey('accounts.User', on_delete=models.CASCADE)
-    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
+    user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, related_name='topic_progress')
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='user_progress')
 
     is_completed = models.BooleanField(default=False)
 
     completed_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
-        unique_together = ('user', 'topic')
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'topic'], name='unique_user_topic_progress')
+        ]
+        indexes = [
+            models.Index(fields=['user', 'is_completed'], name='idx_user_completed'),
+        ]
 
     def __str__(self):
         return f"{self.user.email} - {self.topic.name}"
-    
+
+
 class Question(models.Model):
     DIFFICULTY_CHOICES = (
         ('easy', 'Easy'),
@@ -54,33 +66,46 @@ class Question(models.Model):
     option_c = models.CharField(max_length=255)
     option_d = models.CharField(max_length=255)
 
-    correct_answer = models.CharField(max_length=1)  # A/B/C/D
+    correct_answer = models.CharField(max_length=1, validators=[MinLengthValidator(1)])
 
     difficulty = models.CharField(max_length=10, choices=DIFFICULTY_CHOICES)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ('topic', 'id')
+
     def __str__(self):
         return f"{self.topic.name} - {self.question_text[:50]}"
-    
+
+
 class UserAnswer(models.Model):
-    user = models.ForeignKey('accounts.User', on_delete=models.CASCADE)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, related_name='answers')
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='user_answers')
 
     selected_answer = models.CharField(max_length=1)
     is_correct = models.BooleanField()
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ('-created_at',)
+        indexes = [
+            models.Index(fields=['user', 'is_correct'], name='idx_user_correct'),
+            models.Index(fields=['user', 'question'], name='idx_user_question'),
+            models.Index(fields=['created_at'], name='idx_created_at'),
+        ]
+
     def __str__(self):
         return f"{self.user.email} - Q{self.question.id}"
+
 
 class Test(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
 
-    topics = models.ManyToManyField(Topic)
-    questions = models.ManyToManyField(Question)
+    topics = models.ManyToManyField(Topic, related_name='tests')
+    questions = models.ManyToManyField(Question, related_name='tests')
 
     duration_minutes = models.IntegerField(default=30)
 
@@ -88,16 +113,24 @@ class Test(models.Model):
 
     def __str__(self):
         return self.name
-    
+
+
 class TestAttempt(models.Model):
-    user = models.ForeignKey('accounts.User', on_delete=models.CASCADE)
-    test = models.ForeignKey(Test, on_delete=models.CASCADE)
+    user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, related_name='test_attempts')
+    test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name='attempts')
 
     score = models.IntegerField(default=0)
     total_questions = models.IntegerField(default=0)
 
     started_at = models.DateTimeField(auto_now_add=True)
     completed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ('-started_at',)
+        indexes = [
+            models.Index(fields=['user', 'completed_at'], name='idx_user_completed_attempts'),
+            models.Index(fields=['user', 'test'], name='idx_user_test'),
+        ]
 
     def __str__(self):
         return f"{self.user.email} - {self.test.name}"
@@ -157,6 +190,9 @@ class CompanyTarget(models.Model):
 
     class Meta:
         ordering = ('order', 'name')
+        indexes = [
+            models.Index(fields=['user', 'is_active'], name='idx_user_active_company'),
+        ]
 
     def __str__(self):
         return f"{self.user.email} - {self.name}"
@@ -213,6 +249,76 @@ class ActivityEvent(models.Model):
 
     class Meta:
         ordering = ('-occurred_at', '-id')
+        indexes = [
+            models.Index(fields=['user', '-occurred_at'], name='idx_user_activity'),
+        ]
 
     def __str__(self):
         return f"{self.user.email} - {self.event_type}"
+
+
+class CodeSubmission(models.Model):
+    LANGUAGE_CHOICES = (
+        ('python', 'Python'),
+    )
+
+    user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, related_name='code_submissions')
+
+    code = models.TextField()
+    language = models.CharField(max_length=10, choices=LANGUAGE_CHOICES, default='python')
+    output = models.TextField(blank=True, null=True)
+    error_output = models.TextField(blank=True, null=True)
+    execution_time_ms = models.IntegerField(null=True, blank=True)
+    memory_kb = models.IntegerField(null=True, blank=True)
+    stdin = models.TextField(blank=True, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ('-created_at',)
+        indexes = [
+            models.Index(fields=['user', '-created_at'], name='idx_user_code_subs'),
+        ]
+
+    def __str__(self):
+        return f"{self.user.email} - {self.language} ({self.created_at})"
+
+
+class InterviewSession(models.Model):
+    STATUS_CHOICES = (
+        ('active', 'Active'),
+        ('completed', 'Completed'),
+    )
+
+    user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, related_name='interview_sessions')
+
+    category = models.CharField(max_length=50, default='general')
+    current_question_index = models.IntegerField(default=0)
+    total_questions = models.IntegerField(default=5)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
+    score = models.IntegerField(default=0)
+    max_score = models.IntegerField(default=100)
+
+    started_at = models.DateTimeField(auto_now_add=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ('-started_at',)
+
+    def __str__(self):
+        return f"{self.user.email} - {self.category} ({self.status})"
+
+
+class InterviewQA(models.Model):
+    session = models.ForeignKey(InterviewSession, on_delete=models.CASCADE, related_name='qa_pairs')
+
+    question = models.TextField()
+    user_answer = models.TextField()
+    ai_feedback = models.TextField(blank=True, null=True)
+    score = models.IntegerField(default=0)
+    max_score = models.IntegerField(default=20)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"QA #{self.id} (Session {self.session_id})"

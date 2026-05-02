@@ -1,14 +1,23 @@
+import logging
+from django.db import models, transaction
+from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import AccountSettingsSerializer, RegisterSerializer, UserProfileSerializer, DailyGoalSerializer
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.throttling import AnonRateThrottle
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import IsAuthenticated
-from .models import UserProfile, DailyGoal, UserStreak
-from datetime import date
-from datetime import date, timedelta
 from django.utils import timezone
+
+from .serializers import (
+    AccountSettingsSerializer,
+    RegisterSerializer,
+    UserProfileSerializer,
+    DailyGoalSerializer,
+)
+from .models import UserProfile, DailyGoal, UserStreak
+from datetime import date, timedelta
 from core.models import (
     ActivityEvent,
     CompanyTarget,
@@ -22,6 +31,12 @@ from core.models import (
     UserTopicProgress,
 )
 from core.bootstrap import COMPANY_CATALOG, ensure_platform_catalog, ensure_user_preparation_data
+
+logger = logging.getLogger(__name__)
+
+
+class LoginThrottle(AnonRateThrottle):
+    rate = '5/minute'
 
 
 def percentage(part, total):
@@ -93,6 +108,8 @@ def token_payload_for_user(user):
 
 
 class RegisterView(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
         ensure_platform_catalog()
         serializer = RegisterSerializer(data=request.data)
@@ -102,15 +119,9 @@ class RegisterView(APIView):
             profile_data = {
                 key: serializer.validated_data.get(key)
                 for key in [
-                    "branch",
-                    "college",
-                    "degree",
-                    "graduation_year",
-                    "cgpa",
-                    "location",
-                    "preferred_role",
-                    "has_backlog",
-                    "target_companies",
+                    "branch", "college", "degree", "graduation_year",
+                    "cgpa", "location", "preferred_role",
+                    "has_backlog", "target_companies",
                 ]
                 if key in serializer.validated_data
             }
@@ -125,9 +136,15 @@ class RegisterView(APIView):
 
 
 class LoginView(APIView):
+    permission_classes = [AllowAny]
+    throttle_classes = [LoginThrottle]
+
     def post(self, request):
         email = request.data.get("email")
         password = request.data.get("password")
+
+        if not email or not password:
+            return Response({"error": "Email and password are required"}, status=status.HTTP_400_BAD_REQUEST)
 
         user = authenticate(request, email=email, password=password)
 
@@ -159,6 +176,39 @@ class SessionView(APIView):
         })
 
 
+class RefreshTokenView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        refresh_token = request.data.get("refresh")
+        if not refresh_token:
+            return Response({"error": "Refresh token is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            refresh = RefreshToken(refresh_token)
+            access_token = refresh.access_token
+            return Response({
+                "access": str(access_token),
+            })
+        except Exception:
+            return Response({"error": "Invalid or expired refresh token"}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            refresh_token = request.data.get("refresh")
+            if refresh_token:
+                token = RefreshToken(refresh_token)
+                token.blacklist()
+        except Exception:
+            pass
+
+        return Response({"message": "Logged out successfully"})
+
+
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -174,7 +224,7 @@ class ProfileView(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "Profile updated successfully"})
+            return Response({"message": "Profile updated successfully"}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -195,18 +245,17 @@ class AccountSettingsView(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# ✅ NEW
 class DailyGoalView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         today = date.today()
-        goals = DailyGoal.objects.filter(user=request.user, date=today)
+        goals = DailyGoal.objects.filter(user=request.user, date=today).order_by('-created_at')
         serializer = DailyGoalSerializer(goals, many=True)
         return Response(serializer.data)
 
@@ -221,15 +270,12 @@ class DailyGoalView(APIView):
         if serializer.is_valid():
             serializer.save(user=request.user)
 
-            # ✅ STREAK LOGIC
             streak, created = UserStreak.objects.get_or_create(user=request.user)
 
             if streak.last_active_date == today:
                 pass
-
             elif streak.last_active_date == today - timedelta(days=1):
                 streak.current_streak += 1
-
             else:
                 streak.current_streak = 1
 
@@ -243,7 +289,7 @@ class DailyGoalView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# ✅ NEW VIEW
+
 class DailyGoalUpdateView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -251,16 +297,17 @@ class DailyGoalUpdateView(APIView):
         try:
             goal = DailyGoal.objects.get(id=pk, user=request.user)
         except DailyGoal.DoesNotExist:
-            return Response({"error": "Goal not found"}, status=404)
+            return Response({"error": "Goal not found"}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = DailyGoalSerializer(goal, data=request.data, partial=True)
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
 class StreakView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -271,7 +318,8 @@ class StreakView(APIView):
             "current_streak": streak.current_streak,
             "longest_streak": streak.longest_streak
         })
-    
+
+
 class DashboardView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -287,14 +335,16 @@ class DashboardView(APIView):
         today = timezone.localdate()
         now = timezone.now()
 
-        profile, _ = UserProfile.objects.get_or_create(user=user)
+        profile = getattr(user, 'profile', None)
+        if not profile:
+            profile, _ = UserProfile.objects.get_or_create(user=user)
         streak, _ = UserStreak.objects.get_or_create(user=user)
 
-        answers = UserAnswer.objects.filter(user=user)
-        total_answers = answers.count()
-        correct_answers = answers.filter(is_correct=True).count()
+        answers_qs = UserAnswer.objects.filter(user=user)
+        total_answers = answers_qs.count()
+        correct_answers = answers_qs.filter(is_correct=True).count()
         average_accuracy = percentage(correct_answers, total_answers)
-        problems_solved = answers.filter(is_correct=True).values("question_id").distinct().count()
+        problems_solved = answers_qs.filter(is_correct=True).values("question_id").distinct().count()
 
         completed_attempts = TestAttempt.objects.filter(
             user=user,
@@ -311,9 +361,11 @@ class DashboardView(APIView):
         created_date = timezone.localtime(user.created_at).date() if user.created_at else today
         prep_day = max(1, (today - created_date).days + 1)
 
-        track_payload = []
         track_scores = []
-        for track in Track.objects.all().order_by("name"):
+        track_payload = []
+
+        tracks_qs = Track.objects.prefetch_related('topics').all().order_by("name")
+        for track in tracks_qs:
             total_topics = track.topics.filter(is_active=True).count()
             completed_topics = UserTopicProgress.objects.filter(
                 user=user,
@@ -328,8 +380,8 @@ class DashboardView(APIView):
                 track=track,
                 is_active=True,
             ).exclude(
-                usertopicprogress__user=user,
-                usertopicprogress__is_completed=True,
+                user_progress__user=user,
+                user_progress__is_completed=True,
             ).order_by("order", "id").first()
 
             track_payload.append({
@@ -342,18 +394,27 @@ class DashboardView(APIView):
 
         track_average = round(sum(track_scores) / len(track_scores)) if track_scores else 0
 
+        topic_answer_counts = {}
+        for row in answers_qs.values("question__topic_id").annotate(
+            total=models.Count("id"),
+            correct=models.Count("id", filter=Q(is_correct=True)),
+        ):
+            topic_answer_counts[row["question__topic_id"]] = {
+                "total": row["total"],
+                "correct": row["correct"],
+            }
+
+        topics_qs = Topic.objects.filter(is_active=True).select_related("track").order_by("track__name", "order", "id")
         subject_mastery = []
-        for topic in Topic.objects.filter(is_active=True).select_related("track").order_by("track__name", "order", "id"):
-            topic_answers = answers.filter(question__topic=topic)
-            total_topic_answers = topic_answers.count()
-            topic_correct = topic_answers.filter(is_correct=True).count()
-            accuracy = percentage(topic_correct, total_topic_answers)
+        for topic in topics_qs:
+            stats = topic_answer_counts.get(topic.id, {"total": 0, "correct": 0})
+            accuracy = percentage(stats["correct"], stats["total"])
             subject_mastery.append({
                 "topic": topic.name,
                 "value": accuracy,
                 "next": topic.description[:80] if topic.description else "Continue practice",
                 "tone": tone_for_score(accuracy),
-                "attempts": total_topic_answers,
+                "attempts": stats["total"],
             })
 
         weak_priorities = [
@@ -371,7 +432,7 @@ class DashboardView(APIView):
         weekly_trend = []
         for days_ago in range(6, -1, -1):
             day = today - timedelta(days=days_ago)
-            day_answers = answers.filter(created_at__date=day)
+            day_answers = answers_qs.filter(created_at__date=day)
             day_total = day_answers.count()
             day_correct = day_answers.filter(is_correct=True).count()
             weekly_trend.append({
@@ -480,11 +541,11 @@ class DashboardView(APIView):
                 "time": relative_time(event.occurred_at, now),
                 "occurred_at": event.occurred_at,
             }
-            for event in ActivityEvent.objects.filter(user=user)[:6]
+            for event in ActivityEvent.objects.filter(user=user).order_by('-occurred_at', '-id')[:6]
         ]
 
         derived_activity = []
-        for answer in answers.select_related("question__topic").order_by("-created_at")[:4]:
+        for answer in answers_qs.select_related("question__topic").order_by("-created_at")[:4]:
             topic_name = answer.question.topic.name if answer.question and answer.question.topic else "Practice"
             derived_activity.append({
                 "type": topic_name[:12],
@@ -516,6 +577,14 @@ class DashboardView(APIView):
         if profile.cgpa is not None:
             subtitle_parts.append(f"{profile.cgpa} CGPA")
 
+        hour = now.hour
+        if hour < 12:
+            greeting = f"Good morning, {user.name.split()[0] if user.name else 'there'}"
+        elif hour < 17:
+            greeting = f"Good afternoon, {user.name.split()[0] if user.name else 'there'}"
+        else:
+            greeting = f"Good evening, {user.name.split()[0] if user.name else 'there'}"
+
         return Response({
             "user": {
                 "name": user.name,
@@ -529,7 +598,7 @@ class DashboardView(APIView):
             },
             "header": {
                 "date_label": format_date_label(today),
-                "greeting": f"Good morning, {user.name.split()[0] if user.name else 'there'}",
+                "greeting": greeting,
                 "subtitle": f"Placement readiness dashboard - Day {prep_day} of preparation",
             },
             "sidebar": {

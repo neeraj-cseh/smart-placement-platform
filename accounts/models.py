@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class UserManager(BaseUserManager):
@@ -38,22 +39,24 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
-# ✅ NEW MODEL
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
 
     branch = models.CharField(max_length=100, blank=True)
     college = models.CharField(max_length=160, blank=True)
     degree = models.CharField(max_length=120, blank=True)
     graduation_year = models.PositiveSmallIntegerField(null=True, blank=True)
-    cgpa = models.FloatField(null=True, blank=True)
+    cgpa = models.FloatField(
+        null=True, blank=True,
+        validators=[MinValueValidator(0.0), MaxValueValidator(10.0)]
+    )
     has_backlog = models.BooleanField(default=False)
     location = models.CharField(max_length=120, blank=True)
     preferred_role = models.CharField(max_length=120, blank=True)
     phone = models.CharField(max_length=30, blank=True)
-    linkedin_url = models.URLField(blank=True)
-    github_url = models.URLField(blank=True)
-    portfolio_url = models.URLField(blank=True)
+    linkedin_url = models.URLField(blank=True, max_length=500)
+    github_url = models.URLField(blank=True, max_length=500)
+    portfolio_url = models.URLField(blank=True, max_length=500)
     resume_headline = models.CharField(max_length=180, blank=True)
     bio = models.TextField(blank=True)
     skills = models.JSONField(blank=True, null=True)
@@ -68,9 +71,10 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.email
-    
+
+
 class DailyGoal(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='daily_goals')
 
     goal_text = models.CharField(max_length=255)
     completed = models.BooleanField(default=False)
@@ -79,11 +83,15 @@ class DailyGoal(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ('-created_at',)
+
     def __str__(self):
         return f"{self.user.email} - {self.goal_text}"
-    
+
+
 class UserStreak(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='streak')
 
     current_streak = models.IntegerField(default=0)
     longest_streak = models.IntegerField(default=0)

@@ -1,0 +1,72 @@
+.companies {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.companies__list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.companies__card {
+  padding: 24px;
+  overflow: hidden;
+}
+.companies__card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.companies__card-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.companies__section-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+  font-weight: 700;
+}
+.companies__card-title h3 {
+  font-size: 1.125rem;
+  line-height: 1.25;
+  color: var(--text-primary);
+}
+.companies__card-title span {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.companies__card-icon { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: var(--bg-tertiary); border-radius: var(--radius); color: var(--accent-primary); }
+.companies__role-list {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 16px;
+}
+.companies__role-list > span:first-child,
+.companies__eligibility > span {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.companies__role-tag { display: inline-block; padding: 2px 8px; background: var(--bg-tertiary); border-radius: var(--radius-full); font-size: 0.75rem; color: var(--text-secondary); margin: 2px; }
+.companies__eligibility { margin-top: 16px; }
+.companies__notes { margin: 8px 0 0 16px; font-size: 0.75rem; color: var(--text-secondary); }
+.companies__notes li { margin-bottom: 4px; }
+.companies__link { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 0.8125rem; color: var(--accent-primary); }
+.companies__link:hover { text-decoration: underline; }
+.companies__checklist { display: flex; flex-direction: column; gap: 10px; }
+.companies__checklist-item { display: flex; align-items: center; gap: 10px; font-size: 0.875rem; color: var(--text-secondary); }
+.companies__checkbox { width: 18px; height: 18px; border: 2px solid var(--border-secondary); border-radius: var(--radius-sm); flex-shrink: 0; }
+
+@media (max-width: 640px) {
+  .companies__card-header {
+    flex-direction: column;
+  }
+}
