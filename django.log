@@ -1,0 +1,748 @@
+INFO 2026-05-02 18:53:17,082 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 18:53:43,745 autoreload C:\Users\neera\OneDrive\Desktop\smart-placement-platform\accounts\models.py changed, reloading.
+INFO 2026-05-02 18:53:45,571 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 18:54:35,633 autoreload C:\Users\neera\OneDrive\Desktop\smart-placement-platform\core\models.py changed, reloading.
+INFO 2026-05-02 18:54:37,570 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 18:56:21,660 autoreload C:\Users\neera\OneDrive\Desktop\smart-placement-platform\accounts\views.py changed, reloading.
+INFO 2026-05-02 18:56:23,483 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 19:02:35,307 autoreload C:\Users\neera\OneDrive\Desktop\smart-placement-platform\accounts\views.py changed, reloading.
+INFO 2026-05-02 19:02:37,914 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 19:03:20,066 autoreload C:\Users\neera\OneDrive\Desktop\smart-placement-platform\accounts\views.py changed, reloading.
+INFO 2026-05-02 19:03:22,371 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 19:03:32,734 autoreload C:\Users\neera\OneDrive\Desktop\smart-placement-platform\accounts\views.py changed, reloading.
+INFO 2026-05-02 19:03:35,673 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 19:03:41,793 autoreload C:\Users\neera\OneDrive\Desktop\smart-placement-platform\accounts\views.py changed, reloading.
+INFO 2026-05-02 19:03:45,210 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 19:04:15,392 autoreload C:\Users\neera\OneDrive\Desktop\smart-placement-platform\config\settings.py changed, reloading.
+INFO 2026-05-02 19:04:19,968 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 22:13:54,339 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 23:17:04,543 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 23:18:54,535 log "GET /admin/ HTTP/1.1" 302 0
+INFO 2026-05-02 23:18:54,836 log "GET /admin/login/?next=/admin/ HTTP/1.1" 200 4077
+INFO 2026-05-02 23:18:54,894 basehttp - Broken pipe from ('127.0.0.1', 63538)
+INFO 2026-05-02 23:19:03,657 log "GET /api/health/ HTTP/1.1" 200 51
+INFO 2026-05-02 23:19:03,711 basehttp - Broken pipe from ('127.0.0.1', 49286)
+INFO 2026-05-02 23:20:15,493 autoreload C:\Users\neera\OneDrive\Desktop\smart-placement-platform\accounts\views.py changed, reloading.
+INFO 2026-05-02 23:20:17,608 autoreload Watching for file changes with StatReloader
+WARNING 2026-05-02 23:20:44,945 log Bad Request: /api/auth/login/
+WARNING 2026-05-02 23:20:44,946 log "POST /api/auth/login/ HTTP/1.1" 400 43
+INFO 2026-05-02 23:20:44,980 basehttp - Broken pipe from ('127.0.0.1', 61300)
+WARNING 2026-05-02 23:20:45,010 log Bad Request: /api/auth/token/refresh/
+WARNING 2026-05-02 23:20:45,012 log "POST /api/auth/token/refresh/ HTTP/1.1" 400 37
+INFO 2026-05-02 23:20:45,039 basehttp - Broken pipe from ('127.0.0.1', 61303)
+WARNING 2026-05-02 23:20:45,266 log Bad Request: /api/auth/register/
+WARNING 2026-05-02 23:20:45,268 log "POST /api/auth/register/ HTTP/1.1" 400 111
+INFO 2026-05-02 23:20:45,295 basehttp - Broken pipe from ('127.0.0.1', 61301)
+INFO 2026-05-02 23:22:11,250 autoreload C:\Users\neera\OneDrive\Desktop\smart-placement-platform\config\settings.py changed, reloading.
+INFO 2026-05-02 23:22:12,831 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 23:22:31,022 log "GET /api/health/ HTTP/1.1" 200 51
+WARNING 2026-05-02 23:22:31,043 log Bad Request: /api/auth/login/
+WARNING 2026-05-02 23:22:31,045 log "POST /api/auth/login/ HTTP/1.1" 400 43
+INFO 2026-05-02 23:22:31,066 basehttp - Broken pipe from ('127.0.0.1', 49327)
+INFO 2026-05-02 23:22:31,070 basehttp - Broken pipe from ('127.0.0.1', 49329)
+INFO 2026-05-02 23:27:18,441 log "OPTIONS /api/auth/login/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:27:19,977 log "POST /api/auth/login/ HTTP/1.1" 200 659
+INFO 2026-05-02 23:27:20,052 log "OPTIONS /api/auth/dashboard/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:27:20,054 log "OPTIONS /api/auth/dashboard/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:27:20,638 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-02 23:27:21,238 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-02 23:27:32,438 log "OPTIONS /api/learning-path/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:27:32,438 log "OPTIONS /api/learning-path/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:27:32,938 log "GET /api/learning-path/ HTTP/1.1" 200 29755
+INFO 2026-05-02 23:27:33,318 log "GET /api/learning-path/ HTTP/1.1" 200 29755
+INFO 2026-05-02 23:27:50,749 log "OPTIONS /api/practice/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:27:50,749 log "OPTIONS /api/practice/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:27:51,243 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-02 23:27:51,715 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-02 23:28:03,271 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-02 23:28:03,736 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-02 23:28:14,668 log "OPTIONS /api/code/execute/ HTTP/1.1" 200 0
+ERROR 2026-05-02 23:28:16,801 views Code execution failed: 401 Client Error: Unauthorized for url: https://emkc.org/api/v2/piston/execute
+ERROR 2026-05-02 23:28:16,807 log Service Unavailable: /api/code/execute/
+ERROR 2026-05-02 23:28:16,808 log "POST /api/code/execute/ HTTP/1.1" 503 47
+INFO 2026-05-02 23:28:28,307 log "OPTIONS /api/interview/start/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:28:28,775 log "POST /api/interview/start/ HTTP/1.1" 200 212
+INFO 2026-05-02 23:28:36,887 log "OPTIONS /api/interview/submit/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:28:38,214 log "POST /api/interview/submit/ HTTP/1.1" 200 274
+INFO 2026-05-02 23:28:38,224 log "OPTIONS /api/interview/question/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:28:38,759 log "POST /api/interview/question/ HTTP/1.1" 200 195
+INFO 2026-05-02 23:28:45,525 log "OPTIONS /api/analytics/full/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:28:45,526 log "OPTIONS /api/analytics/full/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:28:46,150 log "GET /api/analytics/full/ HTTP/1.1" 200 8389
+INFO 2026-05-02 23:28:46,710 log "GET /api/analytics/full/ HTTP/1.1" 200 8389
+INFO 2026-05-02 23:32:51,158 log "OPTIONS /api/companies/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:32:51,159 log "OPTIONS /api/companies/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:32:51,612 log "GET /api/companies/ HTTP/1.1" 200 6601
+INFO 2026-05-02 23:32:52,020 log "GET /api/companies/ HTTP/1.1" 200 6601
+INFO 2026-05-02 23:33:39,636 log "OPTIONS /api/auth/profile/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:33:39,636 log "OPTIONS /api/auth/profile/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:33:40,128 log "GET /api/auth/profile/ HTTP/1.1" 200 949
+INFO 2026-05-02 23:33:40,644 log "GET /api/auth/profile/ HTTP/1.1" 200 949
+INFO 2026-05-02 23:33:46,710 log "OPTIONS /api/auth/settings/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:33:46,710 log "OPTIONS /api/auth/settings/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:33:47,183 log "GET /api/auth/settings/ HTTP/1.1" 200 178
+INFO 2026-05-02 23:33:47,642 log "GET /api/auth/settings/ HTTP/1.1" 200 178
+INFO 2026-05-02 23:33:53,349 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-02 23:33:53,994 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-02 23:34:00,810 log "GET /api/learning-path/ HTTP/1.1" 200 29755
+INFO 2026-05-02 23:34:01,292 log "GET /api/learning-path/ HTTP/1.1" 200 29755
+INFO 2026-05-02 23:34:42,069 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-02 23:34:42,522 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-02 23:34:43,436 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-02 23:34:44,014 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-02 23:34:49,255 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-02 23:34:49,765 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-02 23:34:51,178 log "OPTIONS /api/topics/5/questions/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:34:51,493 log "GET /api/topics/5/questions/ HTTP/1.1" 200 434
+INFO 2026-05-02 23:34:56,633 log "GET /api/learning-path/ HTTP/1.1" 200 29755
+INFO 2026-05-02 23:34:57,161 log "GET /api/learning-path/ HTTP/1.1" 200 29755
+INFO 2026-05-02 23:34:57,554 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-02 23:34:57,986 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-02 23:35:11,571 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-02 23:35:12,090 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-02 23:35:16,246 log "OPTIONS /api/tests/3/start/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:35:16,761 log "POST /api/tests/3/start/ HTTP/1.1" 200 85
+INFO 2026-05-02 23:35:16,767 log "OPTIONS /api/tests/3/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:35:17,065 log "GET /api/tests/3/ HTTP/1.1" 200 2151
+INFO 2026-05-02 23:35:23,788 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-02 23:35:24,313 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-02 23:35:24,885 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-02 23:35:25,431 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-02 23:37:44,225 log "POST /api/interview/start/ HTTP/1.1" 200 212
+INFO 2026-05-02 23:37:51,826 log "GET /api/analytics/full/ HTTP/1.1" 200 8389
+INFO 2026-05-02 23:37:52,507 log "GET /api/analytics/full/ HTTP/1.1" 200 8389
+INFO 2026-05-02 23:37:53,595 log "POST /api/interview/start/ HTTP/1.1" 200 204
+INFO 2026-05-02 23:37:57,084 log "GET /api/analytics/full/ HTTP/1.1" 200 8389
+INFO 2026-05-02 23:37:57,655 log "GET /api/analytics/full/ HTTP/1.1" 200 8389
+INFO 2026-05-02 23:38:07,132 log "GET /api/companies/ HTTP/1.1" 200 6601
+INFO 2026-05-02 23:38:07,624 log "GET /api/companies/ HTTP/1.1" 200 6601
+INFO 2026-05-02 23:38:56,708 log "OPTIONS /api/auth/logout/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:38:56,718 log "POST /api/auth/logout/ HTTP/1.1" 200 37
+INFO 2026-05-02 23:39:03,248 log "POST /api/auth/login/ HTTP/1.1" 200 657
+WARNING 2026-05-02 23:39:03,275 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-02 23:39:03,276 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-02 23:39:03,285 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-02 23:39:03,286 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+INFO 2026-05-02 23:43:40,314 autoreload C:\Users\neera\OneDrive\Desktop\smart-placement-platform\core\views.py changed, reloading.
+INFO 2026-05-02 23:43:41,539 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 23:43:48,683 autoreload C:\Users\neera\OneDrive\Desktop\smart-placement-platform\core\views.py changed, reloading.
+INFO 2026-05-02 23:43:50,170 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 23:43:56,287 autoreload C:\Users\neera\OneDrive\Desktop\smart-placement-platform\core\views.py changed, reloading.
+INFO 2026-05-02 23:43:57,399 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 23:44:13,363 autoreload C:\Users\neera\OneDrive\Desktop\smart-placement-platform\core\views.py changed, reloading.
+INFO 2026-05-02 23:44:15,222 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 23:44:26,046 autoreload C:\Users\neera\OneDrive\Desktop\smart-placement-platform\core\views.py changed, reloading.
+INFO 2026-05-02 23:44:27,705 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 23:44:45,043 autoreload C:\Users\neera\OneDrive\Desktop\smart-placement-platform\core\views.py changed, reloading.
+INFO 2026-05-02 23:44:46,619 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 23:44:55,935 autoreload C:\Users\neera\OneDrive\Desktop\smart-placement-platform\core\urls.py changed, reloading.
+INFO 2026-05-02 23:44:57,932 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 23:45:15,796 autoreload C:\Users\neera\OneDrive\Desktop\smart-placement-platform\core\views.py changed, reloading.
+INFO 2026-05-02 23:45:17,639 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 23:45:21,901 autoreload C:\Users\neera\OneDrive\Desktop\smart-placement-platform\core\views.py changed, reloading.
+INFO 2026-05-02 23:45:23,730 autoreload Watching for file changes with StatReloader
+WARNING 2026-05-02 23:45:31,375 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-02 23:45:31,376 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-02 23:45:31,398 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-02 23:45:31,399 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+INFO 2026-05-02 23:47:15,871 log "GET /api/auth/session/ HTTP/1.1" 200 131
+WARNING 2026-05-02 23:47:16,195 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-02 23:47:16,197 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-02 23:47:16,210 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-02 23:47:16,211 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+INFO 2026-05-02 23:52:20,725 autoreload C:\Users\neera\OneDrive\Desktop\smart-placement-platform\core\views.py changed, reloading.
+INFO 2026-05-02 23:52:22,800 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 23:52:27,074 autoreload C:\Users\neera\OneDrive\Desktop\smart-placement-platform\core\urls.py changed, reloading.
+INFO 2026-05-02 23:52:29,015 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 23:52:33,531 log "GET /api/auth/session/ HTTP/1.1" 200 131
+WARNING 2026-05-02 23:52:33,852 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-02 23:52:33,853 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-02 23:52:33,863 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-02 23:52:33,864 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+INFO 2026-05-02 23:53:54,519 log "GET /api/health/ HTTP/1.1" 200 51
+INFO 2026-05-02 23:53:54,583 basehttp - Broken pipe from ('127.0.0.1', 58247)
+INFO 2026-05-02 23:53:54,891 log "GET /api/landing/ HTTP/1.1" 200 1794
+INFO 2026-05-02 23:53:54,947 basehttp - Broken pipe from ('127.0.0.1', 58248)
+INFO 2026-05-02 23:54:01,605 log "GET /api/auth/session/ HTTP/1.1" 200 131
+WARNING 2026-05-02 23:54:01,928 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-02 23:54:01,929 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-02 23:54:01,936 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-02 23:54:01,937 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+INFO 2026-05-02 23:54:03,203 log "GET /api/auth/session/ HTTP/1.1" 200 131
+WARNING 2026-05-02 23:54:03,524 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-02 23:54:03,525 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-02 23:54:03,533 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-02 23:54:03,534 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+INFO 2026-05-02 23:54:14,575 log "GET /api/code/workspace/ HTTP/1.1" 200 632
+INFO 2026-05-02 23:54:14,721 basehttp - Broken pipe from ('127.0.0.1', 57819)
+INFO 2026-05-02 23:54:15,613 log "GET /api/tests/ HTTP/1.1" 200 3978
+ERROR 2026-05-02 23:54:15,950 log Internal Server Error: /api/admin/overview/
+Traceback (most recent call last):
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\backends\mysql\base.py", line 78, in execute
+    return self.cursor.execute(query, args)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\MySQLdb\cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\MySQLdb\cursors.py", line 330, in _query
+    db.query(q)
+    ~~~~~~~~^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\MySQLdb\connections.py", line 286, in query
+    _mysql.connection.query(self, query)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+MySQLdb.NotSupportedError: (1235, "This version of MySQL doesn't yet support 'LIMIT & IN/ALL/ANY/SOME subquery'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\views\generic\base.py", line 106, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\core\views.py", line 1209, in get
+    for profile in UserProfile.objects.filter(user__in=users)
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\models\query.py", line 390, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\models\query.py", line 2000, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\models\query.py", line 95, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1624, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\utils.py", line 94, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\backends\mysql\base.py", line 78, in execute
+    return self.cursor.execute(query, args)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\MySQLdb\cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\MySQLdb\cursors.py", line 330, in _query
+    db.query(q)
+    ~~~~~~~~^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\MySQLdb\connections.py", line 286, in query
+    _mysql.connection.query(self, query)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.NotSupportedError: (1235, "This version of MySQL doesn't yet support 'LIMIT & IN/ALL/ANY/SOME subquery'")
+INFO 2026-05-02 23:54:15,968 log "POST /api/code/execute/ HTTP/1.1" 200 87
+INFO 2026-05-02 23:54:15,977 basehttp - Broken pipe from ('127.0.0.1', 57821)
+ERROR 2026-05-02 23:54:15,988 log "GET /api/admin/overview/ HTTP/1.1" 500 204347
+INFO 2026-05-02 23:54:16,028 basehttp - Broken pipe from ('127.0.0.1', 57823)
+INFO 2026-05-02 23:54:16,114 basehttp - Broken pipe from ('127.0.0.1', 57825)
+ERROR 2026-05-02 23:54:28,826 log Internal Server Error: /api/admin/overview/
+Traceback (most recent call last):
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\backends\mysql\base.py", line 78, in execute
+    return self.cursor.execute(query, args)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\MySQLdb\cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\MySQLdb\cursors.py", line 330, in _query
+    db.query(q)
+    ~~~~~~~~^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\MySQLdb\connections.py", line 286, in query
+    _mysql.connection.query(self, query)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+MySQLdb.NotSupportedError: (1235, "This version of MySQL doesn't yet support 'LIMIT & IN/ALL/ANY/SOME subquery'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\views\generic\base.py", line 106, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\core\views.py", line 1209, in get
+    for profile in UserProfile.objects.filter(user__in=users)
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\models\query.py", line 390, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\models\query.py", line 2000, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\models\query.py", line 95, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1624, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\utils.py", line 94, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\django\db\backends\mysql\base.py", line 78, in execute
+    return self.cursor.execute(query, args)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\MySQLdb\cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\MySQLdb\cursors.py", line 330, in _query
+    db.query(q)
+    ~~~~~~~~^^^
+  File "C:\Users\neera\OneDrive\Desktop\smart-placement-platform\venv\Lib\site-packages\MySQLdb\connections.py", line 286, in query
+    _mysql.connection.query(self, query)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.NotSupportedError: (1235, "This version of MySQL doesn't yet support 'LIMIT & IN/ALL/ANY/SOME subquery'")
+ERROR 2026-05-02 23:54:28,836 log "GET /api/admin/overview/ HTTP/1.1" 500 204347
+INFO 2026-05-02 23:54:28,851 basehttp - Broken pipe from ('127.0.0.1', 56698)
+INFO 2026-05-02 23:54:36,185 autoreload C:\Users\neera\OneDrive\Desktop\smart-placement-platform\core\views.py changed, reloading.
+INFO 2026-05-02 23:54:38,303 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 23:54:45,195 autoreload C:\Users\neera\OneDrive\Desktop\smart-placement-platform\config\settings.py changed, reloading.
+INFO 2026-05-02 23:54:47,247 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 23:54:58,012 log "GET /api/interview/config/ HTTP/1.1" 200 326
+INFO 2026-05-02 23:54:58,087 basehttp - Broken pipe from ('127.0.0.1', 56723)
+INFO 2026-05-02 23:54:58,450 log "GET /api/admin/overview/ HTTP/1.1" 200 40642
+INFO 2026-05-02 23:54:58,617 basehttp - Broken pipe from ('127.0.0.1', 56721)
+WARNING 2026-05-02 23:54:59,868 log Unauthorized: /api/auth/session/
+WARNING 2026-05-02 23:54:59,870 log "GET /api/auth/session/ HTTP/1.1" 401 172
+INFO 2026-05-02 23:54:59,878 log "OPTIONS /api/auth/token/refresh/ HTTP/1.1" 200 0
+WARNING 2026-05-02 23:54:59,887 log Unauthorized: /api/auth/token/refresh/
+WARNING 2026-05-02 23:54:59,888 log "POST /api/auth/token/refresh/ HTTP/1.1" 401 44
+INFO 2026-05-02 23:55:06,842 log "OPTIONS /api/landing/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:55:06,844 log "OPTIONS /api/landing/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:55:07,162 log "GET /api/landing/ HTTP/1.1" 200 1794
+INFO 2026-05-02 23:55:07,489 log "GET /api/landing/ HTTP/1.1" 200 1794
+INFO 2026-05-02 23:55:36,704 log "GET /api/landing/ HTTP/1.1" 200 1794
+INFO 2026-05-02 23:55:36,839 basehttp - Broken pipe from ('127.0.0.1', 51062)
+INFO 2026-05-02 23:55:39,386 log "GET /api/admin/overview/ HTTP/1.1" 200 40642
+INFO 2026-05-02 23:55:39,544 basehttp - Broken pipe from ('127.0.0.1', 51069)
+INFO 2026-05-02 23:55:39,594 log "GET /api/tests/ HTTP/1.1" 200 3978
+INFO 2026-05-02 23:55:39,688 basehttp - Broken pipe from ('127.0.0.1', 51070)
+INFO 2026-05-02 23:55:39,985 log "POST /api/code/execute/ HTTP/1.1" 200 87
+INFO 2026-05-02 23:55:40,047 basehttp - Broken pipe from ('127.0.0.1', 51073)
+INFO 2026-05-02 23:56:03,763 autoreload C:\Users\neera\OneDrive\Desktop\smart-placement-platform\core\views.py changed, reloading.
+INFO 2026-05-02 23:56:06,194 autoreload Watching for file changes with StatReloader
+INFO 2026-05-02 23:57:20,791 log "OPTIONS /api/landing/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:57:20,791 log "OPTIONS /api/landing/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:57:21,133 log "GET /api/landing/ HTTP/1.1" 200 1831
+INFO 2026-05-02 23:57:21,507 log "GET /api/landing/ HTTP/1.1" 200 1831
+INFO 2026-05-02 23:57:51,850 log "POST /api/auth/login/ HTTP/1.1" 200 657
+WARNING 2026-05-02 23:57:51,915 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-02 23:57:51,915 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-02 23:57:51,924 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-02 23:57:51,925 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+INFO 2026-05-02 23:57:56,395 log "GET /api/auth/session/ HTTP/1.1" 200 131
+WARNING 2026-05-02 23:57:56,719 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-02 23:57:56,720 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-02 23:57:56,727 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-02 23:57:56,728 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-02 23:58:00,340 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-02 23:58:00,341 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-02 23:58:00,348 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-02 23:58:00,349 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-02 23:58:02,036 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-02 23:58:02,036 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-02 23:58:02,044 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-02 23:58:02,045 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+INFO 2026-05-02 23:58:03,673 log "GET /api/landing/ HTTP/1.1" 200 1831
+INFO 2026-05-02 23:58:12,013 log "GET /api/landing/ HTTP/1.1" 200 1831
+INFO 2026-05-02 23:58:12,313 log "GET /api/landing/ HTTP/1.1" 200 1831
+INFO 2026-05-02 23:58:54,616 log "OPTIONS /api/auth/login/ HTTP/1.1" 200 0
+WARNING 2026-05-02 23:58:55,554 log Unauthorized: /api/auth/login/
+WARNING 2026-05-02 23:58:55,556 log "POST /api/auth/login/ HTTP/1.1" 401 31
+INFO 2026-05-02 23:59:42,124 log "POST /api/auth/login/ HTTP/1.1" 200 659
+INFO 2026-05-02 23:59:42,179 log "OPTIONS /api/auth/dashboard/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:59:42,179 log "OPTIONS /api/auth/dashboard/ HTTP/1.1" 200 0
+INFO 2026-05-02 23:59:42,810 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-02 23:59:43,444 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-02 23:59:59,098 log "GET /api/auth/session/ HTTP/1.1" 200 131
+WARNING 2026-05-02 23:59:59,434 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-02 23:59:59,436 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-02 23:59:59,443 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-02 23:59:59,444 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+INFO 2026-05-03 00:04:42,931 log "OPTIONS /api/landing/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:04:42,936 log "OPTIONS /api/landing/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:04:43,219 log "GET /api/landing/ HTTP/1.1" 200 1831
+INFO 2026-05-03 00:04:43,526 log "GET /api/landing/ HTTP/1.1" 200 1831
+INFO 2026-05-03 00:05:16,319 log "OPTIONS /api/auth/login/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:05:17,268 log "POST /api/auth/login/ HTTP/1.1" 200 657
+INFO 2026-05-03 00:05:17,382 log "OPTIONS /api/auth/dashboard/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:05:17,382 log "OPTIONS /api/auth/dashboard/ HTTP/1.1" 200 0
+WARNING 2026-05-03 00:05:17,392 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 00:05:17,393 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-03 00:05:17,402 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 00:05:17,403 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+INFO 2026-05-03 00:05:29,335 log "OPTIONS /api/auth/session/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:05:29,342 log "GET /api/auth/session/ HTTP/1.1" 200 131
+WARNING 2026-05-03 00:05:32,371 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 00:05:32,373 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-03 00:05:32,380 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 00:05:32,382 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+INFO 2026-05-03 00:06:00,188 log "OPTIONS /api/auth/session/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:06:00,200 log "GET /api/auth/session/ HTTP/1.1" 200 133
+INFO 2026-05-03 00:06:01,232 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 00:06:01,845 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 00:06:22,519 autoreload Watching for file changes with StatReloader
+INFO 2026-05-03 00:06:31,644 log "GET /api/auth/session/ HTTP/1.1" 200 133
+INFO 2026-05-03 00:06:32,650 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 00:06:32,989 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 00:06:36,682 log "GET /api/auth/session/ HTTP/1.1" 200 131
+WARNING 2026-05-03 00:06:36,997 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 00:06:36,999 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-03 00:06:37,010 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 00:06:37,012 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+INFO 2026-05-03 00:06:49,766 log "OPTIONS /api/learning-path/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:06:49,766 log "OPTIONS /api/learning-path/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:06:50,219 log "GET /api/learning-path/ HTTP/1.1" 200 29755
+INFO 2026-05-03 00:06:50,768 log "GET /api/learning-path/ HTTP/1.1" 200 29755
+INFO 2026-05-03 00:06:51,204 log "OPTIONS /api/practice/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:06:51,204 log "OPTIONS /api/practice/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:06:51,712 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-03 00:06:52,163 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-03 00:06:59,814 log "OPTIONS /api/tests/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:06:59,814 log "OPTIONS /api/tests/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:07:00,358 log "GET /api/tests/ HTTP/1.1" 200 3978
+INFO 2026-05-03 00:07:00,845 log "GET /api/tests/ HTTP/1.1" 200 3978
+INFO 2026-05-03 00:07:07,015 log "OPTIONS /api/code/workspace/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:07:07,015 log "OPTIONS /api/code/workspace/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:07:07,028 log "GET /api/code/workspace/ HTTP/1.1" 200 989
+INFO 2026-05-03 00:07:07,043 log "GET /api/code/workspace/ HTTP/1.1" 200 989
+WARNING 2026-05-03 00:07:55,780 log Not Found: /
+WARNING 2026-05-03 00:07:55,781 log "GET / HTTP/1.1" 404 2456
+WARNING 2026-05-03 00:07:55,796 log Not Found: /
+WARNING 2026-05-03 00:07:55,797 log "GET / HTTP/1.1" 404 2456
+INFO 2026-05-03 00:08:04,830 log "GET /api/auth/session/ HTTP/1.1" 200 131
+WARNING 2026-05-03 00:08:05,165 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 00:08:05,167 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-03 00:08:05,176 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 00:08:05,177 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+INFO 2026-05-03 00:08:06,151 log "GET /api/auth/session/ HTTP/1.1" 200 131
+WARNING 2026-05-03 00:08:06,481 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 00:08:06,482 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-03 00:08:06,489 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 00:08:06,489 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+INFO 2026-05-03 00:08:07,383 log "GET /api/auth/session/ HTTP/1.1" 200 131
+WARNING 2026-05-03 00:08:07,700 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 00:08:07,701 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-03 00:08:07,709 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 00:08:07,710 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+INFO 2026-05-03 00:08:08,570 log "GET /api/auth/session/ HTTP/1.1" 200 131
+WARNING 2026-05-03 00:08:08,889 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 00:08:08,890 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-03 00:08:08,896 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 00:08:08,897 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+INFO 2026-05-03 00:08:51,645 log "GET /api/auth/session/ HTTP/1.1" 200 131
+WARNING 2026-05-03 00:08:51,969 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 00:08:51,970 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-03 00:08:51,986 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 00:08:51,987 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+INFO 2026-05-03 00:09:28,756 log "GET /api/auth/session/ HTTP/1.1" 200 133
+INFO 2026-05-03 00:09:29,809 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 00:09:30,396 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+WARNING 2026-05-03 00:09:32,593 log Not Found: /
+WARNING 2026-05-03 00:09:32,594 log "GET / HTTP/1.1" 404 2456
+WARNING 2026-05-03 00:09:32,607 log Not Found: /
+WARNING 2026-05-03 00:09:32,608 log "GET / HTTP/1.1" 404 2456
+INFO 2026-05-03 00:09:38,168 log "OPTIONS /api/landing/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:09:38,171 log "OPTIONS /api/landing/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:09:38,533 log "GET /api/landing/ HTTP/1.1" 200 1831
+INFO 2026-05-03 00:09:38,811 log "GET /api/landing/ HTTP/1.1" 200 1831
+INFO 2026-05-03 00:10:09,701 log "OPTIONS /api/auth/login/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:10:11,050 log "POST /api/auth/login/ HTTP/1.1" 200 659
+INFO 2026-05-03 00:10:11,174 log "OPTIONS /api/auth/dashboard/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:10:11,174 log "OPTIONS /api/auth/dashboard/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:10:11,788 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 00:10:12,381 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 00:10:18,564 log "OPTIONS /api/learning-path/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:10:18,564 log "OPTIONS /api/learning-path/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:10:19,123 log "GET /api/learning-path/ HTTP/1.1" 200 29755
+INFO 2026-05-03 00:10:19,621 log "GET /api/learning-path/ HTTP/1.1" 200 29755
+INFO 2026-05-03 00:10:27,161 log "OPTIONS /api/practice/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:10:27,161 log "OPTIONS /api/practice/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:10:27,733 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-03 00:10:28,183 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-03 00:10:29,035 log "OPTIONS /api/topics/5/questions/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:10:29,328 log "GET /api/topics/5/questions/ HTTP/1.1" 200 434
+INFO 2026-05-03 00:10:31,036 log "OPTIONS /api/tests/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:10:31,036 log "OPTIONS /api/tests/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:10:31,623 log "GET /api/tests/ HTTP/1.1" 200 3978
+INFO 2026-05-03 00:10:32,120 log "GET /api/tests/ HTTP/1.1" 200 3978
+INFO 2026-05-03 00:10:36,011 log "OPTIONS /api/code/workspace/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:10:36,011 log "OPTIONS /api/code/workspace/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:10:36,022 log "GET /api/code/workspace/ HTTP/1.1" 200 989
+INFO 2026-05-03 00:10:36,031 log "GET /api/code/workspace/ HTTP/1.1" 200 989
+INFO 2026-05-03 00:10:52,464 log "OPTIONS /api/code/execute/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:10:53,072 log "POST /api/code/execute/ HTTP/1.1" 200 97
+INFO 2026-05-03 00:10:53,089 log "GET /api/code/workspace/ HTTP/1.1" 200 1188
+INFO 2026-05-03 00:11:06,455 log "POST /api/code/execute/ HTTP/1.1" 200 86
+INFO 2026-05-03 00:11:06,471 log "GET /api/code/workspace/ HTTP/1.1" 200 1366
+INFO 2026-05-03 00:11:13,797 log "OPTIONS /api/interview/config/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:11:13,798 log "OPTIONS /api/interview/config/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:11:13,805 log "GET /api/interview/config/ HTTP/1.1" 200 326
+INFO 2026-05-03 00:11:13,812 log "GET /api/interview/config/ HTTP/1.1" 200 326
+INFO 2026-05-03 00:11:16,621 log "OPTIONS /api/interview/start/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:11:17,077 log "POST /api/interview/start/ HTTP/1.1" 200 212
+INFO 2026-05-03 00:11:18,790 log "OPTIONS /api/analytics/full/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:11:18,790 log "OPTIONS /api/analytics/full/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:11:19,382 log "GET /api/analytics/full/ HTTP/1.1" 200 8389
+INFO 2026-05-03 00:11:19,953 log "GET /api/analytics/full/ HTTP/1.1" 200 8389
+INFO 2026-05-03 00:11:25,501 log "OPTIONS /api/companies/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:11:25,502 log "OPTIONS /api/companies/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:11:25,924 log "GET /api/companies/ HTTP/1.1" 200 6601
+INFO 2026-05-03 00:11:26,399 log "GET /api/companies/ HTTP/1.1" 200 6601
+INFO 2026-05-03 00:11:44,060 log "OPTIONS /api/auth/logout/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:11:44,075 log "POST /api/auth/logout/ HTTP/1.1" 200 37
+INFO 2026-05-03 00:12:04,838 log "POST /api/auth/login/ HTTP/1.1" 200 657
+WARNING 2026-05-03 00:12:04,886 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 00:12:04,887 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-03 00:12:04,895 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 00:12:04,896 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+INFO 2026-05-03 00:12:32,082 log "GET /api/auth/session/ HTTP/1.1" 200 133
+INFO 2026-05-03 00:12:33,028 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 00:12:33,608 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 00:12:35,572 log "OPTIONS /api/auth/logout/ HTTP/1.1" 200 0
+INFO 2026-05-03 00:12:35,580 log "POST /api/auth/logout/ HTTP/1.1" 200 37
+INFO 2026-05-03 00:12:53,311 log "POST /api/auth/login/ HTTP/1.1" 200 657
+WARNING 2026-05-03 00:12:53,338 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 00:12:53,339 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-03 00:12:53,348 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 00:12:53,349 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-03 01:21:28,650 log Unauthorized: /api/auth/session/
+WARNING 2026-05-03 01:21:28,653 log "GET /api/auth/session/ HTTP/1.1" 401 172
+INFO 2026-05-03 01:21:28,657 log "OPTIONS /api/auth/token/refresh/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:21:28,662 log "POST /api/auth/token/refresh/ HTTP/1.1" 200 244
+INFO 2026-05-03 01:21:28,675 log "GET /api/auth/session/ HTTP/1.1" 200 131
+WARNING 2026-05-03 01:21:29,000 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 01:21:29,002 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-03 01:21:29,016 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 01:21:29,018 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+INFO 2026-05-03 01:21:32,570 log "GET /api/auth/session/ HTTP/1.1" 200 131
+WARNING 2026-05-03 01:21:32,893 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 01:21:32,894 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-03 01:21:32,904 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 01:21:32,905 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+INFO 2026-05-03 01:21:35,398 log "GET /api/auth/session/ HTTP/1.1" 200 131
+WARNING 2026-05-03 01:21:35,721 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 01:21:35,722 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-03 01:21:35,728 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 01:21:35,729 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-03 01:21:41,914 log Not Found: /
+WARNING 2026-05-03 01:21:41,915 log "GET / HTTP/1.1" 404 2456
+WARNING 2026-05-03 01:21:41,931 log Not Found: /
+WARNING 2026-05-03 01:21:41,933 log "GET / HTTP/1.1" 404 2456
+INFO 2026-05-03 01:21:44,817 log "GET /api/auth/session/ HTTP/1.1" 200 131
+WARNING 2026-05-03 01:21:45,153 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 01:21:45,154 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-03 01:21:45,162 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 01:21:45,163 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+INFO 2026-05-03 01:25:38,391 log "GET /api/auth/session/ HTTP/1.1" 200 131
+WARNING 2026-05-03 01:25:38,710 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 01:25:38,711 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-03 01:25:38,721 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 01:25:38,722 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-03 01:25:41,023 log Not Found: /
+WARNING 2026-05-03 01:25:41,024 log "GET / HTTP/1.1" 404 2456
+WARNING 2026-05-03 01:25:41,038 log Not Found: /
+WARNING 2026-05-03 01:25:41,039 log "GET / HTTP/1.1" 404 2456
+INFO 2026-05-03 01:26:37,201 log "OPTIONS /api/auth/session/ HTTP/1.1" 200 0
+WARNING 2026-05-03 01:26:37,206 log Unauthorized: /api/auth/session/
+WARNING 2026-05-03 01:26:37,207 log "GET /api/auth/session/ HTTP/1.1" 401 172
+INFO 2026-05-03 01:26:37,212 log "POST /api/auth/token/refresh/ HTTP/1.1" 200 244
+INFO 2026-05-03 01:26:37,223 log "GET /api/auth/session/ HTTP/1.1" 200 131
+WARNING 2026-05-03 01:26:37,547 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 01:26:37,548 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+WARNING 2026-05-03 01:26:37,557 log Forbidden: /api/auth/dashboard/
+WARNING 2026-05-03 01:26:37,558 log "GET /api/auth/dashboard/ HTTP/1.1" 403 83
+INFO 2026-05-03 01:27:01,381 log "OPTIONS /api/landing/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:27:01,381 log "OPTIONS /api/landing/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:27:01,846 log "GET /api/landing/ HTTP/1.1" 200 1831
+INFO 2026-05-03 01:27:02,175 log "GET /api/landing/ HTTP/1.1" 200 1831
+INFO 2026-05-03 01:27:36,183 log "OPTIONS /api/auth/login/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:27:37,468 log "POST /api/auth/login/ HTTP/1.1" 200 659
+INFO 2026-05-03 01:27:37,534 log "OPTIONS /api/auth/dashboard/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:27:37,534 log "OPTIONS /api/auth/dashboard/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:27:38,132 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 01:27:38,722 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 01:28:10,197 log "OPTIONS /api/companies/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:28:10,197 log "OPTIONS /api/companies/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:28:10,612 log "GET /api/companies/ HTTP/1.1" 200 6601
+INFO 2026-05-03 01:28:11,119 log "GET /api/companies/ HTTP/1.1" 200 6601
+INFO 2026-05-03 01:28:21,015 log "OPTIONS /api/analytics/full/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:28:21,016 log "OPTIONS /api/analytics/full/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:28:21,589 log "GET /api/analytics/full/ HTTP/1.1" 200 8389
+INFO 2026-05-03 01:28:22,111 log "GET /api/analytics/full/ HTTP/1.1" 200 8389
+INFO 2026-05-03 01:28:26,230 log "OPTIONS /api/interview/config/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:28:26,230 log "OPTIONS /api/interview/config/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:28:26,240 log "GET /api/interview/config/ HTTP/1.1" 200 326
+INFO 2026-05-03 01:28:26,249 log "GET /api/interview/config/ HTTP/1.1" 200 326
+INFO 2026-05-03 01:28:27,295 log "GET /api/companies/ HTTP/1.1" 200 6601
+INFO 2026-05-03 01:28:27,804 log "GET /api/companies/ HTTP/1.1" 200 6601
+INFO 2026-05-03 01:28:43,484 log "GET /api/analytics/full/ HTTP/1.1" 200 8389
+INFO 2026-05-03 01:28:44,060 log "GET /api/analytics/full/ HTTP/1.1" 200 8389
+INFO 2026-05-03 01:28:54,449 log "GET /api/interview/config/ HTTP/1.1" 200 326
+INFO 2026-05-03 01:28:54,456 log "GET /api/interview/config/ HTTP/1.1" 200 326
+INFO 2026-05-03 01:29:03,112 log "OPTIONS /api/code/workspace/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:29:03,112 log "OPTIONS /api/code/workspace/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:29:03,124 log "GET /api/code/workspace/ HTTP/1.1" 200 1366
+INFO 2026-05-03 01:29:03,134 log "GET /api/code/workspace/ HTTP/1.1" 200 1366
+INFO 2026-05-03 01:29:08,791 log "OPTIONS /api/tests/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:29:08,792 log "OPTIONS /api/tests/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:29:09,372 log "GET /api/tests/ HTTP/1.1" 200 3978
+INFO 2026-05-03 01:29:09,949 log "GET /api/tests/ HTTP/1.1" 200 3978
+INFO 2026-05-03 01:29:36,164 log "OPTIONS /api/practice/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:29:36,165 log "OPTIONS /api/practice/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:29:36,690 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-03 01:29:37,212 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-03 01:29:40,339 log "OPTIONS /api/topics/27/questions/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:29:40,628 log "GET /api/topics/27/questions/ HTTP/1.1" 200 407
+INFO 2026-05-03 01:29:44,238 log "OPTIONS /api/learning-path/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:29:44,238 log "OPTIONS /api/learning-path/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:29:44,767 log "GET /api/learning-path/ HTTP/1.1" 200 29755
+INFO 2026-05-03 01:29:45,290 log "GET /api/learning-path/ HTTP/1.1" 200 29755
+INFO 2026-05-03 01:30:05,058 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 01:30:05,661 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 01:30:11,141 log "GET /api/companies/ HTTP/1.1" 200 6601
+INFO 2026-05-03 01:30:11,576 log "GET /api/companies/ HTTP/1.1" 200 6601
+INFO 2026-05-03 01:49:13,333 log "OPTIONS /api/auth/logout/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:49:13,346 log "POST /api/auth/logout/ HTTP/1.1" 200 37
+INFO 2026-05-03 01:49:18,448 log "GET /api/landing/ HTTP/1.1" 200 1831
+INFO 2026-05-03 01:49:18,785 log "GET /api/landing/ HTTP/1.1" 200 1831
+INFO 2026-05-03 01:50:01,365 log "POST /api/auth/login/ HTTP/1.1" 200 659
+INFO 2026-05-03 01:50:02,336 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 01:50:03,323 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 01:50:15,005 log "GET /api/learning-path/ HTTP/1.1" 200 29755
+INFO 2026-05-03 01:50:15,755 log "GET /api/learning-path/ HTTP/1.1" 200 29755
+INFO 2026-05-03 01:50:30,882 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-03 01:50:31,600 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-03 01:50:39,786 log "OPTIONS /api/topics/10/questions/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:50:40,108 log "GET /api/topics/10/questions/ HTTP/1.1" 200 332
+INFO 2026-05-03 01:50:44,109 log "GET /api/learning-path/ HTTP/1.1" 200 29755
+INFO 2026-05-03 01:50:44,879 log "GET /api/learning-path/ HTTP/1.1" 200 29755
+INFO 2026-05-03 01:50:45,125 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-03 01:50:45,941 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-03 01:50:53,383 log "GET /api/tests/ HTTP/1.1" 200 3978
+INFO 2026-05-03 01:50:54,107 log "GET /api/tests/ HTTP/1.1" 200 3978
+INFO 2026-05-03 01:51:00,765 log "OPTIONS /api/tests/3/start/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:51:01,444 log "POST /api/tests/3/start/ HTTP/1.1" 200 181
+INFO 2026-05-03 01:51:01,451 log "OPTIONS /api/tests/3/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:51:02,060 log "GET /api/tests/3/ HTTP/1.1" 200 3059
+INFO 2026-05-03 01:51:24,392 log "GET /api/code/workspace/ HTTP/1.1" 200 1366
+INFO 2026-05-03 01:51:24,405 log "GET /api/code/workspace/ HTTP/1.1" 200 1366
+INFO 2026-05-03 01:51:42,051 log "OPTIONS /api/code/execute/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:51:42,687 log "POST /api/code/execute/ HTTP/1.1" 200 105
+INFO 2026-05-03 01:51:42,703 log "GET /api/code/workspace/ HTTP/1.1" 200 1581
+INFO 2026-05-03 01:52:11,033 log "GET /api/interview/config/ HTTP/1.1" 200 326
+INFO 2026-05-03 01:52:11,042 log "GET /api/interview/config/ HTTP/1.1" 200 326
+INFO 2026-05-03 01:52:14,499 log "OPTIONS /api/interview/start/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:52:14,998 log "POST /api/interview/start/ HTTP/1.1" 200 212
+INFO 2026-05-03 01:52:20,642 log "OPTIONS /api/interview/submit/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:52:22,286 log "POST /api/interview/submit/ HTTP/1.1" 200 358
+INFO 2026-05-03 01:52:22,295 log "OPTIONS /api/interview/question/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:52:22,752 log "POST /api/interview/question/ HTTP/1.1" 200 195
+INFO 2026-05-03 01:52:29,987 log "GET /api/analytics/full/ HTTP/1.1" 200 8389
+INFO 2026-05-03 01:52:30,694 log "GET /api/analytics/full/ HTTP/1.1" 200 8389
+INFO 2026-05-03 01:52:43,198 log "GET /api/companies/ HTTP/1.1" 200 6601
+INFO 2026-05-03 01:52:43,777 log "GET /api/companies/ HTTP/1.1" 200 6601
+INFO 2026-05-03 01:53:04,343 log "OPTIONS /api/auth/profile/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:53:04,343 log "OPTIONS /api/auth/profile/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:53:04,910 log "GET /api/auth/profile/ HTTP/1.1" 200 949
+INFO 2026-05-03 01:53:05,571 log "GET /api/auth/profile/ HTTP/1.1" 200 949
+INFO 2026-05-03 01:53:17,355 log "OPTIONS /api/auth/settings/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:53:17,356 log "OPTIONS /api/auth/settings/ HTTP/1.1" 200 0
+INFO 2026-05-03 01:53:18,013 log "GET /api/auth/settings/ HTTP/1.1" 200 178
+INFO 2026-05-03 01:53:18,674 log "GET /api/auth/settings/ HTTP/1.1" 200 178
+INFO 2026-05-03 01:53:22,531 log "GET /api/interview/config/ HTTP/1.1" 200 326
+INFO 2026-05-03 01:53:22,540 log "GET /api/interview/config/ HTTP/1.1" 200 326
+INFO 2026-05-03 01:53:25,606 log "GET /api/companies/ HTTP/1.1" 200 6601
+INFO 2026-05-03 01:53:26,267 log "GET /api/companies/ HTTP/1.1" 200 6601
+INFO 2026-05-03 01:53:26,594 log "GET /api/code/workspace/ HTTP/1.1" 200 1581
+INFO 2026-05-03 01:53:26,606 log "GET /api/code/workspace/ HTTP/1.1" 200 1581
+INFO 2026-05-03 01:53:31,922 log "POST /api/auth/logout/ HTTP/1.1" 200 37
+INFO 2026-05-03 02:13:22,559 log "POST /api/auth/login/ HTTP/1.1" 200 659
+INFO 2026-05-03 02:13:23,248 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 02:13:23,958 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 02:13:35,588 log "OPTIONS /api/auth/session/ HTTP/1.1" 200 0
+INFO 2026-05-03 02:13:35,599 log "GET /api/auth/session/ HTTP/1.1" 200 133
+INFO 2026-05-03 02:13:45,183 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 02:13:45,816 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+WARNING 2026-05-03 02:46:32,355 log Unauthorized: /api/auth/session/
+WARNING 2026-05-03 02:46:32,358 log "GET /api/auth/session/ HTTP/1.1" 401 172
+INFO 2026-05-03 02:46:32,369 log "OPTIONS /api/auth/token/refresh/ HTTP/1.1" 200 0
+INFO 2026-05-03 02:46:32,376 log "POST /api/auth/token/refresh/ HTTP/1.1" 200 244
+INFO 2026-05-03 02:46:32,394 log "GET /api/auth/session/ HTTP/1.1" 200 133
+INFO 2026-05-03 02:46:33,611 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 02:46:34,415 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 02:46:38,523 log "GET /api/learning-path/ HTTP/1.1" 200 29755
+INFO 2026-05-03 02:46:39,273 log "GET /api/learning-path/ HTTP/1.1" 200 29755
+INFO 2026-05-03 02:47:02,940 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 02:47:03,849 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 02:47:04,255 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-03 02:47:05,852 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 02:47:06,012 log "GET /api/practice/ HTTP/1.1" 200 19172
+INFO 2026-05-03 02:47:06,939 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 02:47:09,035 log "GET /api/learning-path/ HTTP/1.1" 200 29755
+INFO 2026-05-03 02:47:10,056 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
+INFO 2026-05-03 02:47:10,240 log "GET /api/learning-path/ HTTP/1.1" 200 29755
+INFO 2026-05-03 02:47:11,082 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14633
