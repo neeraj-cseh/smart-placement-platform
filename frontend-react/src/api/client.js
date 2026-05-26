@@ -8,6 +8,37 @@ function getRefreshToken() {
   return localStorage.getItem('refresh');
 }
 
+function humanizeFieldName(field) {
+  if (field === 'non_field_errors') return '';
+  return field.replaceAll('_', ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function formatApiError(error) {
+  if (!error) return 'Request failed';
+  if (typeof error === 'string') return error;
+  if (error.error || error.detail || error.message) {
+    return error.error || error.detail || error.message;
+  }
+
+  if (Array.isArray(error)) {
+    return error.map(formatApiError).join(' ');
+  }
+
+  if (typeof error === 'object') {
+    const messages = Object.entries(error).flatMap(([field, value]) => {
+      const text = Array.isArray(value)
+        ? value.map(formatApiError).join(' ')
+        : formatApiError(value);
+      const label = humanizeFieldName(field);
+      return text ? [`${label ? `${label}: ` : ''}${text}`] : [];
+    });
+
+    return messages.join(' ');
+  }
+
+  return 'Request failed';
+}
+
 async function refreshToken() {
   const refresh = getRefreshToken();
   if (!refresh) return false;
@@ -60,7 +91,7 @@ async function apiFetch(endpoint, options = {}) {
 
   if (!res.ok && res.status !== 204) {
     const error = await res.json().catch(() => ({ error: 'Request failed' }));
-    throw new Error(error.error || error.detail || error.message || 'Request failed');
+    throw new Error(formatApiError(error) || 'Request failed');
   }
 
   if (res.status === 204) return null;

@@ -109,11 +109,14 @@
   font-weight: 500;
   transition: all var(--transition);
   text-decoration: none;
+  position: relative;
+  overflow: hidden;
 }
 
 .sidebar__link:hover {
   background: var(--bg-hover);
   color: var(--text-primary);
+  transform: translateX(3px);
 }
 
 .sidebar__link--active {
@@ -271,8 +274,9 @@
   gap: 16px;
   height: var(--topbar-height);
   padding: 0 24px;
-  background: var(--bg-primary);
+  background: color-mix(in srgb, var(--bg-primary) 90%, transparent);
   border-bottom: 1px solid var(--border-primary);
+  backdrop-filter: blur(14px);
 }
 
 .topbar__menu-btn {
@@ -358,6 +362,13 @@
   background: var(--bg-card);
   border: 1px solid var(--border-primary);
   border-radius: var(--radius-lg);
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+
+.stat-card:hover {
+  border-color: var(--border-secondary);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
 }
 
 .stat-card__label {

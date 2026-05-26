@@ -4,7 +4,7 @@ import { useApi } from '../hooks/useApi';
 import Layout from '../components/Layout';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
-import { Users, BookOpen, Activity, ClipboardList, Building2, Plus, RefreshCw } from 'lucide-react';
+import { Users, BookOpen, Activity, ClipboardList, Building2, Plus, RefreshCw, Pencil, Trash2, X } from 'lucide-react';
 import './admin.css';
 
 const tabs = [
@@ -14,6 +14,16 @@ const tabs = [
   { id: 'tests', label: 'Tests', icon: ClipboardList },
   { id: 'companies', label: 'Companies', icon: Building2 },
 ];
+
+const detailEndpoints = {
+  track: (id) => `/admin/tracks/${id}/`,
+  topic: (id) => `/admin/topics/${id}/`,
+  question: (id) => `/admin/questions/${id}/`,
+  test: (id) => `/admin/tests/${id}/`,
+  company: (id) => `/admin/company-targets/${id}/`,
+};
+
+const emptyEditing = { type: '', id: null };
 
 function initialForms() {
   return {
@@ -38,6 +48,7 @@ function AdminPage() {
   const { data, loading, refetch } = useApi('/admin/overview/');
   const [activeTab, setActiveTab] = useState('overview');
   const [forms, setForms] = useState(initialForms);
+  const [editing, setEditing] = useState(emptyEditing);
   const [saving, setSaving] = useState('');
   const [notice, setNotice] = useState('');
   const [error, setError] = useState('');
@@ -54,19 +65,116 @@ function AdminPage() {
     setNotice('');
   };
 
+  const resetForms = () => {
+    setForms(initialForms());
+    setEditing(emptyEditing);
+  };
+
   const saveContent = async (section, payload) => {
     setSaving(section);
     setError('');
     setNotice('');
     try {
-      const response = await api.post('/admin/content/', payload);
+      const isEditing = editing.type === section && editing.id;
+      const updatePayload = { ...payload };
+      delete updatePayload.type;
+      const response = isEditing
+        ? await api.patch(detailEndpoints[section](editing.id), updatePayload)
+        : await api.post('/admin/content/', payload);
       setNotice(response.message || 'Saved');
-      setForms(initialForms());
+      resetForms();
       await refetch();
     } catch (err) {
       setError(err.message);
     } finally {
       setSaving('');
+    }
+  };
+
+  const deleteItem = async (section, id, label) => {
+    const action = section === 'company' ? 'Archive' : 'Delete';
+    if (!window.confirm(`${action} ${label}?`)) return;
+    setSaving(`${section}-${id}-delete`);
+    setError('');
+    setNotice('');
+    try {
+      await api.delete(detailEndpoints[section](id));
+      setNotice(section === 'company' ? `${label} archived` : `${label} deleted`);
+      resetForms();
+      await refetch();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving('');
+    }
+  };
+
+  const startEdit = (section, item) => {
+    setEditing({ type: section, id: item.id });
+    setError('');
+    setNotice('');
+
+    if (['track', 'topic', 'question'].includes(section)) setActiveTab('content');
+    if (section === 'test') setActiveTab('tests');
+    if (section === 'company') setActiveTab('companies');
+
+    if (section === 'track') {
+      setForms((prev) => ({
+        ...prev,
+        track: { name: item.name || '', description: item.description || '' },
+      }));
+    }
+
+    if (section === 'topic') {
+      setForms((prev) => ({
+        ...prev,
+        topic: {
+          track_id: item.track_id || '',
+          name: item.name || '',
+          description: item.description || '',
+          order: item.order || '',
+        },
+      }));
+    }
+
+    if (section === 'question') {
+      setForms((prev) => ({
+        ...prev,
+        question: {
+          topic_id: item.topic_id || '',
+          question_text: item.question_text || '',
+          option_a: item.option_a || '',
+          option_b: item.option_b || '',
+          option_c: item.option_c || '',
+          option_d: item.option_d || '',
+          correct_answer: item.correct_answer || 'A',
+          difficulty: item.difficulty || 'medium',
+        },
+      }));
+    }
+
+    if (section === 'test') {
+      setForms((prev) => ({
+        ...prev,
+        test: {
+          name: item.name || '',
+          description: item.description || '',
+          duration_minutes: item.duration_minutes || 30,
+          topic_ids: item.topic_ids || [],
+        },
+      }));
+    }
+
+    if (section === 'company') {
+      setForms((prev) => ({
+        ...prev,
+        company: {
+          user_id: item.user_id || '',
+          name: item.name || '',
+          readiness: item.readiness ?? 0,
+          focus: item.focus || '',
+        },
+      }));
     }
   };
 
@@ -82,9 +190,30 @@ function AdminPage() {
     setError('');
     setNotice('');
     try {
-      const response = await api.post('/admin/company-targets/', payload);
+      const isEditing = editing.type === 'company' && editing.id;
+      const response = isEditing
+        ? await api.patch(detailEndpoints.company(editing.id), {
+            readiness: payload.readiness,
+            focus: payload.focus,
+          })
+        : await api.post('/admin/company-targets/', payload);
       setNotice(response.message || 'Company target saved');
-      setForms(initialForms());
+      resetForms();
+      await refetch();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving('');
+    }
+  };
+
+  const updateCompany = async (targetId, patch) => {
+    setSaving(`company-${targetId}`);
+    setError('');
+    setNotice('');
+    try {
+      await api.patch(detailEndpoints.company(targetId), patch);
+      setNotice('Company target updated');
       await refetch();
     } catch (err) {
       setError(err.message);
@@ -215,7 +344,7 @@ function AdminPage() {
         {activeTab === 'content' && (
           <div className="admin__content-grid">
             <Card>
-              <Card.Header>Create track</Card.Header>
+              <Card.Header>{editing.type === 'track' ? 'Edit track' : 'Create track'}</Card.Header>
               <Card.Body>
                 <form className="admin__form" onSubmit={(event) => {
                   event.preventDefault();
@@ -223,13 +352,20 @@ function AdminPage() {
                 }}>
                   <input value={forms.track.name} onChange={(event) => updateForm('track', { name: event.target.value })} placeholder="Track name" required />
                   <textarea value={forms.track.description} onChange={(event) => updateForm('track', { description: event.target.value })} placeholder="Track description" rows={3} />
-                  <Button type="submit" size="sm" icon={Plus} loading={saving === 'track'}>Save track</Button>
+                  <div className="admin__form-actions">
+                    <Button type="submit" size="sm" icon={Plus} loading={saving === 'track'}>
+                      {editing.type === 'track' ? 'Update track' : 'Save track'}
+                    </Button>
+                    {editing.type === 'track' && (
+                      <Button type="button" size="sm" variant="ghost" icon={X} onClick={resetForms}>Cancel</Button>
+                    )}
+                  </div>
                 </form>
               </Card.Body>
             </Card>
 
             <Card>
-              <Card.Header>Create topic</Card.Header>
+              <Card.Header>{editing.type === 'topic' ? 'Edit topic' : 'Create topic'}</Card.Header>
               <Card.Body>
                 <form className="admin__form" onSubmit={(event) => {
                   event.preventDefault();
@@ -242,13 +378,20 @@ function AdminPage() {
                   <input value={forms.topic.name} onChange={(event) => updateForm('topic', { name: event.target.value })} placeholder="Topic name" required />
                   <input value={forms.topic.order} onChange={(event) => updateForm('topic', { order: event.target.value })} placeholder="Order" type="number" min="1" />
                   <textarea value={forms.topic.description} onChange={(event) => updateForm('topic', { description: event.target.value })} placeholder="Topic description" rows={3} />
-                  <Button type="submit" size="sm" icon={Plus} loading={saving === 'topic'}>Save topic</Button>
+                  <div className="admin__form-actions">
+                    <Button type="submit" size="sm" icon={Plus} loading={saving === 'topic'}>
+                      {editing.type === 'topic' ? 'Update topic' : 'Save topic'}
+                    </Button>
+                    {editing.type === 'topic' && (
+                      <Button type="button" size="sm" variant="ghost" icon={X} onClick={resetForms}>Cancel</Button>
+                    )}
+                  </div>
                 </form>
               </Card.Body>
             </Card>
 
             <Card className="admin__wide">
-              <Card.Header>Create question</Card.Header>
+              <Card.Header>{editing.type === 'question' ? 'Edit question' : 'Create question'}</Card.Header>
               <Card.Body>
                 <form className="admin__form admin__form--question" onSubmit={(event) => {
                   event.preventDefault();
@@ -276,7 +419,14 @@ function AdminPage() {
                     <option value="medium">Medium</option>
                     <option value="hard">Hard</option>
                   </select>
-                  <Button type="submit" size="sm" icon={Plus} loading={saving === 'question'}>Save question</Button>
+                  <div className="admin__form-actions admin__span-2">
+                    <Button type="submit" size="sm" icon={Plus} loading={saving === 'question'}>
+                      {editing.type === 'question' ? 'Update question' : 'Save question'}
+                    </Button>
+                    {editing.type === 'question' && (
+                      <Button type="button" size="sm" variant="ghost" icon={X} onClick={resetForms}>Cancel</Button>
+                    )}
+                  </div>
                 </form>
               </Card.Body>
             </Card>
@@ -290,12 +440,26 @@ function AdminPage() {
                       <div className="admin__track-head">
                         <strong>{track.name}</strong>
                         <span>{track.topic_count} topics / {track.question_count} questions</span>
+                        <div className="admin__row-actions">
+                          <Button size="sm" variant="ghost" icon={Pencil} onClick={() => startEdit('track', track)}>Edit</Button>
+                          <Button size="sm" variant="ghost" icon={Trash2} loading={saving === `track-${track.id}-delete`} onClick={() => deleteItem('track', track.id, track.name)}>
+                            Delete
+                          </Button>
+                        </div>
                       </div>
                       <div className="admin__topic-list">
                         {track.topics.map((topic) => (
                           <div key={topic.id} className="admin__topic-item">
-                            <span>{topic.name}</span>
-                            <span>{topic.question_count} Qs</span>
+                            <div>
+                              <span>{topic.name}</span>
+                              <small>{topic.question_count} Qs</small>
+                            </div>
+                            <div className="admin__row-actions">
+                              <Button size="sm" variant="ghost" icon={Pencil} onClick={() => startEdit('topic', { ...topic, track_id: track.id })}>Edit</Button>
+                              <Button size="sm" variant="ghost" icon={Trash2} loading={saving === `topic-${topic.id}-delete`} onClick={() => deleteItem('topic', topic.id, topic.name)}>
+                                Delete
+                              </Button>
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -310,7 +474,7 @@ function AdminPage() {
         {activeTab === 'tests' && (
           <div className="admin__content-grid">
             <Card>
-              <Card.Header>Create or update test</Card.Header>
+              <Card.Header>{editing.type === 'test' ? 'Edit test' : 'Create test'}</Card.Header>
               <Card.Body>
                 <form className="admin__form" onSubmit={(event) => {
                   event.preventDefault();
@@ -332,7 +496,14 @@ function AdminPage() {
                   >
                     {allTopics.map((topic) => <option key={topic.id} value={topic.id}>{topic.track_name} - {topic.name}</option>)}
                   </select>
-                  <Button type="submit" size="sm" icon={Plus} loading={saving === 'test'}>Save test</Button>
+                  <div className="admin__form-actions">
+                    <Button type="submit" size="sm" icon={Plus} loading={saving === 'test'}>
+                      {editing.type === 'test' ? 'Update test' : 'Save test'}
+                    </Button>
+                    {editing.type === 'test' && (
+                      <Button type="button" size="sm" variant="ghost" icon={X} onClick={resetForms}>Cancel</Button>
+                    )}
+                  </div>
                 </form>
               </Card.Body>
             </Card>
@@ -350,6 +521,12 @@ function AdminPage() {
                       <span>{test.duration_minutes} min</span>
                       <span>{test.question_count} questions</span>
                       <span>{test.topic_count} sections</span>
+                      <div className="admin__row-actions">
+                        <Button size="sm" variant="ghost" icon={Pencil} onClick={() => startEdit('test', test)}>Edit</Button>
+                        <Button size="sm" variant="ghost" icon={Trash2} loading={saving === `test-${test.id}-delete`} onClick={() => deleteItem('test', test.id, test.name)}>
+                          Delete
+                        </Button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -365,6 +542,12 @@ function AdminPage() {
                       <span>{question.track} / {question.topic}</span>
                       <strong>{question.question_text}</strong>
                       <span>{question.difficulty} - correct {question.correct_answer}</span>
+                      <div className="admin__row-actions">
+                        <Button size="sm" variant="ghost" icon={Pencil} onClick={() => startEdit('question', question)}>Edit</Button>
+                        <Button size="sm" variant="ghost" icon={Trash2} loading={saving === `question-${question.id}-delete`} onClick={() => deleteItem('question', question.id, 'question')}>
+                          Delete
+                        </Button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -376,17 +559,24 @@ function AdminPage() {
         {activeTab === 'companies' && (
           <div className="admin__content-grid">
             <Card>
-              <Card.Header>Add company target</Card.Header>
+              <Card.Header>{editing.type === 'company' ? 'Edit company target' : 'Add company target'}</Card.Header>
               <Card.Body>
                 <form className="admin__form" onSubmit={saveCompany}>
-                  <select value={forms.company.user_id} onChange={(event) => updateForm('company', { user_id: event.target.value })} required>
+                  <select value={forms.company.user_id} onChange={(event) => updateForm('company', { user_id: event.target.value })} required disabled={editing.type === 'company'}>
                     <option value="">Select user</option>
                     {users.map((user) => <option key={user.id} value={user.id}>{user.email}</option>)}
                   </select>
-                  <input value={forms.company.name} onChange={(event) => updateForm('company', { name: event.target.value })} placeholder="Company name" required />
+                  <input value={forms.company.name} onChange={(event) => updateForm('company', { name: event.target.value })} placeholder="Company name" required disabled={editing.type === 'company'} />
                   <input value={forms.company.readiness} onChange={(event) => updateForm('company', { readiness: event.target.value })} type="number" min="0" max="100" />
                   <textarea value={forms.company.focus} onChange={(event) => updateForm('company', { focus: event.target.value })} placeholder="Preparation focus" rows={3} />
-                  <Button type="submit" size="sm" icon={Plus} loading={saving === 'company'}>Save company</Button>
+                  <div className="admin__form-actions">
+                    <Button type="submit" size="sm" icon={Plus} loading={saving === 'company'}>
+                      {editing.type === 'company' ? 'Update company' : 'Save company'}
+                    </Button>
+                    {editing.type === 'company' && (
+                      <Button type="button" size="sm" variant="ghost" icon={X} onClick={resetForms}>Cancel</Button>
+                    )}
+                  </div>
                 </form>
               </Card.Body>
             </Card>
@@ -403,6 +593,7 @@ function AdminPage() {
                         <th>Readiness</th>
                         <th>Focus</th>
                         <th>Status</th>
+                        <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -413,6 +604,20 @@ function AdminPage() {
                           <td><span className={`badge badge--${target.tone}`}>{target.readiness}%</span></td>
                           <td>{target.focus}</td>
                           <td><span className={`badge badge--${target.is_active ? 'green' : 'slate'}`}>{target.is_active ? 'Active' : 'Archived'}</span></td>
+                          <td>
+                            <div className="admin__row-actions">
+                              <Button size="sm" variant="ghost" icon={Pencil} onClick={() => startEdit('company', target)}>Edit</Button>
+                              {target.is_active ? (
+                                <Button size="sm" variant="ghost" icon={Trash2} loading={saving === `company-${target.id}-delete`} onClick={() => deleteItem('company', target.id, target.name)}>
+                                  Archive
+                                </Button>
+                              ) : (
+                                <Button size="sm" variant="ghost" loading={saving === `company-${target.id}`} onClick={() => updateCompany(target.id, { is_active: true })}>
+                                  Restore
+                                </Button>
+                              )}
+                            </div>
+                          </td>
                         </tr>
                       ))}
                     </tbody>

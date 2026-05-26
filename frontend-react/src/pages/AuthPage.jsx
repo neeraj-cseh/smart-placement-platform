@@ -39,8 +39,9 @@ function AuthPage({ mode: initialMode = 'login' }) {
     setError('');
 
     try {
+      let response;
       if (mode === 'login') {
-        await login(form.email, form.password);
+        response = await login(form.email, form.password);
       } else {
         const payload = {
           email: form.email,
@@ -53,9 +54,9 @@ function AuthPage({ mode: initialMode = 'login' }) {
         if (form.graduation_year) payload.graduation_year = parseInt(form.graduation_year);
         if (form.cgpa) payload.cgpa = parseFloat(form.cgpa);
         if (form.preferred_role) payload.preferred_role = form.preferred_role;
-        await register(payload);
+        response = await register(payload);
       }
-      navigate('/');
+      navigate(response.user?.is_admin ? '/admin' : '/');
     } catch (err) {
       setError(err.message || 'Something went wrong');
     } finally {

@@ -106,6 +106,7 @@ def test_payload(test, latest_attempt=None, best_attempt=None, attempt_count=0):
     questions = list(test.questions.select_related("topic", "topic__track").all())
     total_questions = len(questions)
     duration = max(1, test.duration_minutes or 1)
+    sections = test_sections_for(test)
     return {
         "id": test.id,
         "name": test.name,
@@ -113,7 +114,9 @@ def test_payload(test, latest_attempt=None, best_attempt=None, attempt_count=0):
         "duration_minutes": duration,
         "question_count": total_questions,
         "topic_count": test.topics.count(),
-        "sections": test_sections_for(test),
+        "sections": sections,
+        "topic_ids": [section["id"] for section in sections],
+        "question_ids": [question.id for question in questions],
         "difficulty_mix": difficulty_mix_for_questions(questions),
         "marks_per_question": 1,
         "total_marks": total_questions,
@@ -1324,6 +1327,10 @@ class AdminOverviewView(APIView):
                 "topic": question.topic.name if question.topic else "General",
                 "track": question.topic.track.name if question.topic and question.topic.track else "General",
                 "question_text": question.question_text,
+                "option_a": question.option_a,
+                "option_b": question.option_b,
+                "option_c": question.option_c,
+                "option_d": question.option_d,
                 "difficulty": question.difficulty,
                 "correct_answer": question.correct_answer,
             }
@@ -1612,6 +1619,145 @@ class AdminTopicDetailView(APIView):
             return Response({"message": "Topic archived because student history exists.", "id": topic.id, "is_active": False})
 
         topic.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class AdminQuestionDetailView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def patch(self, request, question_id):
+        try:
+            question = Question.objects.get(id=question_id)
+        except Question.DoesNotExist:
+            return Response({"error": "Question not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        changed_fields = []
+        if "topic_id" in request.data:
+            try:
+                question.topic = Topic.objects.get(id=request.data.get("topic_id"), is_active=True)
+            except (Topic.DoesNotExist, ValueError, TypeError):
+                return Response({"error": "Valid topic_id is required."}, status=status.HTTP_400_BAD_REQUEST)
+            changed_fields.append("topic")
+
+        if "question_text" in request.data:
+            question_text = str(request.data.get("question_text", "")).strip()
+            if not question_text:
+                return Response({"error": "Question text cannot be blank."}, status=status.HTTP_400_BAD_REQUEST)
+            question.question_text = question_text
+            changed_fields.append("question_text")
+
+        for option_field in ["option_a", "option_b", "option_c", "option_d"]:
+            if option_field in request.data:
+                option_text = str(request.data.get(option_field, "")).strip()
+                if not option_text:
+                    return Response({"error": "All four options are required."}, status=status.HTTP_400_BAD_REQUEST)
+                setattr(question, option_field, option_text)
+                changed_fields.append(option_field)
+
+        if "correct_answer" in request.data:
+            correct_answer = str(request.data.get("correct_answer", "")).strip().upper()
+            if correct_answer not in ["A", "B", "C", "D"]:
+                return Response({"error": "correct_answer must be A, B, C, or D."}, status=status.HTTP_400_BAD_REQUEST)
+            question.correct_answer = correct_answer
+            changed_fields.append("correct_answer")
+
+        if "difficulty" in request.data:
+            difficulty = str(request.data.get("difficulty", "")).strip().lower()
+            if difficulty not in ["easy", "medium", "hard"]:
+                return Response({"error": "difficulty must be easy, medium, or hard."}, status=status.HTTP_400_BAD_REQUEST)
+            question.difficulty = difficulty
+            changed_fields.append("difficulty")
+
+        if changed_fields:
+            question.save(update_fields=sorted(set(changed_fields)))
+
+        return Response({
+            "message": "Question updated",
+            "id": question.id,
+            "topic_id": question.topic_id,
+            "question_text": question.question_text,
+            "difficulty": question.difficulty,
+            "correct_answer": question.correct_answer,
+        })
+
+    def delete(self, request, question_id):
+        try:
+            question = Question.objects.get(id=question_id)
+        except Question.DoesNotExist:
+            return Response({"error": "Question not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        if UserAnswer.objects.filter(question=question).exists():
+            return Response(
+                {"error": "This question has student answer history and cannot be deleted."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        question.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class AdminTestDetailView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def patch(self, request, test_id):
+        try:
+            test = Test.objects.get(id=test_id)
+        except Test.DoesNotExist:
+            return Response({"error": "Test not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        changed_fields = []
+        if "name" in request.data:
+            name = str(request.data.get("name", "")).strip()
+            if not name:
+                return Response({"error": "Test name cannot be blank."}, status=status.HTTP_400_BAD_REQUEST)
+            test.name = name
+            changed_fields.append("name")
+
+        if "description" in request.data:
+            test.description = str(request.data.get("description", "")).strip()
+            changed_fields.append("description")
+
+        if "duration_minutes" in request.data:
+            try:
+                test.duration_minutes = max(1, int(request.data.get("duration_minutes") or 30))
+                changed_fields.append("duration_minutes")
+            except (ValueError, TypeError):
+                return Response({"error": "Duration must be a number."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if changed_fields:
+            test.save(update_fields=sorted(set(changed_fields)))
+
+        topic_ids = request.data.get("topic_ids")
+        question_ids = request.data.get("question_ids")
+
+        if topic_ids is not None:
+            topics = Topic.objects.filter(id__in=topic_ids, is_active=True)
+            test.topics.set(topics)
+            if question_ids is None:
+                questions = Question.objects.filter(topic__in=topics).order_by("topic__order", "id")[:20]
+                test.questions.set(questions)
+
+        if question_ids is not None:
+            questions = Question.objects.filter(id__in=question_ids)
+            test.questions.set(questions)
+            if topic_ids is None:
+                test.topics.set(Topic.objects.filter(id__in=questions.values_list("topic_id", flat=True)))
+
+        return Response({"message": "Test updated", "test": test_payload(test)})
+
+    def delete(self, request, test_id):
+        try:
+            test = Test.objects.get(id=test_id)
+        except Test.DoesNotExist:
+            return Response({"error": "Test not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        if TestAttempt.objects.filter(test=test).exists():
+            return Response(
+                {"error": "This test has student attempts and cannot be deleted."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        test.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

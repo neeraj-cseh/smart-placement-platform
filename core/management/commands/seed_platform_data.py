@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 
 from accounts.models import User
-from core.bootstrap import ensure_platform_catalog, ensure_user_preparation_data
+from core.bootstrap import ensure_demo_user_preparation_data, ensure_platform_catalog
 
 
 class Command(BaseCommand):
@@ -31,7 +31,7 @@ class Command(BaseCommand):
             user.name = options["name"]
             user.save(update_fields=["name"])
 
-        ensure_user_preparation_data(user)
+        ensure_demo_user_preparation_data(user)
 
         action = "created" if created else "updated"
         self.stdout.write(self.style.SUCCESS(f"Seed data {action} for {user.email}"))

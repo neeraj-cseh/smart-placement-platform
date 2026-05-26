@@ -4,11 +4,12 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-weight: 500;
+  font-weight: 700;
   border-radius: var(--radius);
   transition: all var(--transition);
   white-space: nowrap;
   user-select: none;
+  min-height: 36px;
 }
 
 .btn:focus-visible {
@@ -37,12 +38,15 @@
 }
 
 .btn--primary {
-  background: var(--accent-primary);
+  background: linear-gradient(135deg, var(--accent-primary), color-mix(in srgb, var(--accent-primary) 78%, var(--accent-info)));
   color: white;
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--accent-primary) 26%, transparent);
 }
 
 .btn--primary:hover:not(.btn--disabled) {
-  background: var(--accent-primary-hover);
+  background: linear-gradient(135deg, var(--accent-primary-hover), var(--accent-primary));
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px color-mix(in srgb, var(--accent-primary) 32%, transparent);
 }
 
 .btn--secondary {
@@ -53,6 +57,7 @@
 
 .btn--secondary:hover:not(.btn--disabled) {
   background: var(--bg-hover);
+  transform: translateY(-1px);
 }
 
 .btn--ghost {
@@ -107,9 +112,27 @@
   border-radius: var(--radius-lg);
   transition: all var(--transition);
   min-width: 0;
+  position: relative;
+  overflow: hidden;
 }
 
-.card--hover:hover {
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent-primary) 9%, transparent), transparent 38%);
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.card:hover::before,
+.card--hover:hover::before {
+  opacity: 1;
+}
+
+.card--hover:hover,
+.card:hover {
   border-color: var(--border-secondary);
   box-shadow: var(--shadow-lg);
   transform: translateY(-2px);

@@ -713,13 +713,36 @@ def _ensure_tests(topic_lookup):
 
 @transaction.atomic
 def ensure_user_preparation_data(user, profile_data=None):
+    from accounts.models import UserProfile, UserStreak
+
+    ensure_platform_catalog()
+
+    profile, _ = UserProfile.objects.get_or_create(user=user)
+    updates = {}
+    incoming = profile_data or {}
+
+    for field in DEFAULT_PROFILE:
+        if field in incoming and incoming[field] not in [None, "", []]:
+            updates[field] = incoming[field]
+
+    for field, value in updates.items():
+        setattr(profile, field, value)
+    if updates:
+        profile.save(update_fields=list(updates.keys()))
+
+    UserStreak.objects.get_or_create(user=user)
+    return profile
+
+
+@transaction.atomic
+def ensure_demo_user_preparation_data(user, profile_data=None):
     from accounts.models import DailyGoal, UserProfile, UserStreak
 
     today = timezone.localdate()
     now = timezone.now()
     topic_lookup = ensure_platform_catalog()
 
-    profile, _ = UserProfile.objects.get_or_create(user=user, defaults=DEFAULT_PROFILE)
+    profile, _ = UserProfile.objects.get_or_create(user=user)
     updates = {}
     incoming = profile_data or {}
 

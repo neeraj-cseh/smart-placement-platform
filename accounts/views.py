@@ -262,13 +262,10 @@ class DailyGoalView(APIView):
     def post(self, request):
         today = date.today()
 
-        data = request.data.copy()
-        data['date'] = today
-
-        serializer = DailyGoalSerializer(data=data)
+        serializer = DailyGoalSerializer(data=request.data)
 
         if serializer.is_valid():
-            serializer.save(user=request.user)
+            serializer.save(user=request.user, date=today)
 
             streak, created = UserStreak.objects.get_or_create(user=request.user)
 

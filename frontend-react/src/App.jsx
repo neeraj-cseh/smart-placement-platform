@@ -40,7 +40,7 @@ function PublicRoute({ children }) {
 
   if (loading) return routeFallback;
 
-  if (user) return <Navigate to="/" replace />;
+  if (user) return <Navigate to={user.is_admin ? '/admin' : '/'} replace />;
 
   return children;
 }
@@ -50,7 +50,8 @@ function HomeRoute() {
 
   if (loading) return routeFallback;
 
-  return user ? <DashboardPage /> : <LandingPage />;
+  if (!user) return <LandingPage />;
+  return user.is_admin ? <AdminPage /> : <DashboardPage />;
 }
 
 function App() {
