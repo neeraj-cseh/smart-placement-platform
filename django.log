@@ -1897,3 +1897,4 @@ INFO 2026-05-26 06:12:39,299 log "POST /api/auth/login/ HTTP/1.1" 200 645
 INFO 2026-05-26 06:12:39,912 log "GET /api/auth/dashboard/ HTTP/1.1" 200 13131
 INFO 2026-05-26 06:12:40,382 log "GET /api/auth/dashboard/ HTTP/1.1" 200 13131
 INFO 2026-05-26 06:25:24,506 log "POST /api/auth/logout/ HTTP/1.1" 200 37
+INFO 2026-05-27 04:55:06,397 autoreload Watching for file changes with StatReloader
