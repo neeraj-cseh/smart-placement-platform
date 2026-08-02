@@ -18754,3 +18754,38 @@ Traceback (most recent call last):
     ^^^^^^^^^^^^^^^
 AttributeError: 'RefreshToken' object has no attribute 'blacklist'
 INFO 2026-08-02 22:06:17,133 log "POST /api/auth/logout/ HTTP/1.1" 200 37
+INFO 2026-08-03 00:18:46,999 base Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO 2026-08-03 00:18:47,000 base Added job "Sync external contests every 12 hours" to job store "default"
+INFO 2026-08-03 00:18:47,001 base Scheduler started
+INFO 2026-08-03 00:18:47,004 scheduler APScheduler started: Background contest synchronization is active.
+INFO 2026-08-03 00:18:47,024 autoreload Watching for file changes with StatReloader
+INFO 2026-08-03 00:19:34,545 log "OPTIONS /api/auth/login/ HTTP/1.1" 200 0
+INFO 2026-08-03 00:19:35,571 log "POST /api/auth/login/ HTTP/1.1" 200 645
+INFO 2026-08-03 00:19:35,821 log "OPTIONS /api/auth/dashboard/ HTTP/1.1" 200 0
+INFO 2026-08-03 00:19:36,076 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14552
+INFO 2026-08-03 00:19:36,293 log "GET /api/auth/dashboard/ HTTP/1.1" 200 14552
+INFO 2026-08-03 00:19:41,403 log "OPTIONS /api/companies/ HTTP/1.1" 200 0
+INFO 2026-08-03 00:19:41,407 log "OPTIONS /api/companies/ HTTP/1.1" 200 0
+INFO 2026-08-03 00:19:41,432 log "GET /api/companies/ HTTP/1.1" 200 19860
+INFO 2026-08-03 00:19:41,458 log "GET /api/companies/ HTTP/1.1" 200 19860
+INFO 2026-08-03 00:19:44,580 log "OPTIONS /api/interview/config/ HTTP/1.1" 200 0
+INFO 2026-08-03 00:19:44,598 log "GET /api/interview/config/ HTTP/1.1" 200 3073
+INFO 2026-08-03 00:19:44,615 log "GET /api/interview/config/ HTTP/1.1" 200 3073
+INFO 2026-08-03 00:19:53,126 log "OPTIONS /api/passport/ HTTP/1.1" 200 0
+INFO 2026-08-03 00:19:53,129 log "OPTIONS /api/passport/ HTTP/1.1" 200 0
+INFO 2026-08-03 00:19:53,230 log "GET /api/passport/ HTTP/1.1" 200 2599
+INFO 2026-08-03 00:19:53,259 log "GET /api/passport/ HTTP/1.1" 200 2599
+INFO 2026-08-03 00:19:55,046 log "OPTIONS /api/auth/profile/ HTTP/1.1" 200 0
+INFO 2026-08-03 00:19:55,047 log "OPTIONS /api/auth/profile/ HTTP/1.1" 200 0
+INFO 2026-08-03 00:19:55,064 log "GET /api/auth/profile/ HTTP/1.1" 200 438
+INFO 2026-08-03 00:19:55,080 log "GET /api/auth/profile/ HTTP/1.1" 200 438
+INFO 2026-08-03 00:19:57,586 log "GET /api/passport/ HTTP/1.1" 200 2599
+INFO 2026-08-03 00:19:57,621 log "GET /api/passport/ HTTP/1.1" 200 2599
+INFO 2026-08-03 01:19:50,089 log "OPTIONS /api/auth/session/ HTTP/1.1" 200 0
+WARNING 2026-08-03 01:19:50,099 log Unauthorized: /api/auth/session/
+WARNING 2026-08-03 01:19:50,105 log "GET /api/auth/session/ HTTP/1.1" 401 172
+INFO 2026-08-03 01:19:50,166 log "OPTIONS /api/auth/token/refresh/ HTTP/1.1" 200 0
+INFO 2026-08-03 01:19:50,170 log "POST /api/auth/token/refresh/ HTTP/1.1" 200 244
+INFO 2026-08-03 01:19:50,686 log "GET /api/auth/session/ HTTP/1.1" 200 119
+INFO 2026-08-03 01:19:53,534 log "GET /api/passport/ HTTP/1.1" 200 2599
+INFO 2026-08-03 01:19:53,585 log "GET /api/passport/ HTTP/1.1" 200 2599
