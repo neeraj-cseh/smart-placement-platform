@@ -1,4 +1,4 @@
-.not-found { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg-primary); }
+﻿.not-found { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg-primary); }
 .not-found__content { text-align: center; }
 .not-found__code { font-size: 8rem; font-weight: 800; color: var(--accent-primary); line-height: 1; }
 .not-found__title { font-size: 1.5rem; font-weight: 600; margin: 16px 0 8px; }

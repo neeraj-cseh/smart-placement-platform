@@ -56,7 +56,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(source='user.name', read_only=True)
+    name = serializers.CharField(source='user.name', required=False)
     email = serializers.EmailField(source='user.email', read_only=True)
 
     class Meta:
@@ -72,6 +72,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
         ]
 
 
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user', {})
+        if 'name' in user_data:
+            instance.user.name = user_data['name']
+            instance.user.save(update_fields=['name'])
+        return super().update(instance, validated_data)
 class AccountSettingsSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source='user.name')
     email = serializers.EmailField(source='user.email', read_only=True)

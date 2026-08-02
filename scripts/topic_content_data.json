@@ -1,0 +1,185 @@
+{
+  "number-systems": {
+    "overview": "### What is Number Systems?\n\nNumber Systems form the foundation of computer arithmetic, cryptography, and bitwise logic. This topic covers the translation between Decimal, Binary, Hexadecimal, and Octal formats, and fundamental rules of modular arithmetic and divisibility.\n\n### Why it matters in interviews\n- **Systems Programming**: Low-level embedded systems and OS kernels operate fundamentally on bits and bytes.\n- **Cryptography**: Encryption algorithms rely heavily on prime factorization and modular arithmetic.\n- **Optimization**: Bitwise operations are significantly faster than arithmetic division or multiplication.",
+    "learn": "### Core Concepts of Number Systems\n\nTo master Number Systems, you need to understand bases and prime factorization:\n\n1. **Base Conversions**: Converting Base-10 (Decimal) to Base-2 (Binary) uses continuous division by 2.\n2. **Hexadecimal Notation**: Base-16 maps 4 binary bits to a single character (0-F), vastly simplifying memory address reading.\n3. **Modular Arithmetic**: `(A + B) % M = ((A % M) + (B % M)) % M`. This is critical for preventing integer overflow in DP and combinatorics problems.\n4. **Divisibility Rules**: Fast mental checks for 3, 4, 8, 9, and 11 can drastically reduce computation time in aptitude rounds.",
+    "questions": [
+      {
+        "question_text": "What is the binary equivalent of the decimal number 25?",
+        "option_a": "11001",
+        "option_b": "10101",
+        "option_c": "11101",
+        "option_d": "10011",
+        "correct_answer": "A",
+        "difficulty": "easy",
+        "explanation": "25 / 2 = 12 rem 1, 12 / 2 = 6 rem 0, 6 / 2 = 3 rem 0, 3 / 2 = 1 rem 1, 1 / 2 = 0 rem 1. Reading remainders bottom-up gives 11001."
+      },
+      {
+        "question_text": "In modular arithmetic, which property is FALSE?",
+        "option_a": "(A + B) % C = ((A % C) + (B % C)) % C",
+        "option_b": "(A * B) % C = ((A % C) * (B % C)) % C",
+        "option_c": "(A / B) % C = ((A % C) / (B % C)) % C",
+        "option_d": "(A - B) % C = ((A % C) - (B % C) + C) % C",
+        "correct_answer": "C",
+        "difficulty": "medium",
+        "explanation": "Division in modular arithmetic requires finding the modular multiplicative inverse using Fermat's Little Theorem or Extended Euclidean Algorithm."
+      },
+      {
+        "question_text": "How many bits are required to represent a single hexadecimal digit?",
+        "option_a": "2 bits",
+        "option_b": "4 bits",
+        "option_c": "8 bits",
+        "option_d": "16 bits",
+        "correct_answer": "B",
+        "difficulty": "easy",
+        "explanation": "A hexadecimal digit ranges from 0-15. Representing 16 distinct values requires exactly 4 bits (2^4 = 16)."
+      },
+      {
+        "question_text": "If a number N ends in 000 in binary, what can be guaranteed about its decimal representation?",
+        "option_a": "It is divisible by 4",
+        "option_b": "It is divisible by 8",
+        "option_c": "It is a power of 2",
+        "option_d": "It is divisible by 10",
+        "correct_answer": "B",
+        "difficulty": "medium",
+        "explanation": "Ending in three zeros in binary means the last three bits are 0, which implies the number is a multiple of 2^3, which is 8."
+      }
+    ],
+    "visualization_type": "number-systems",
+    "visualization_config": {
+      "topic": "Number Systems",
+      "seeded": true,
+      "decimal": 25,
+      "binary": "11001",
+      "steps": [
+        {"desc": "Convert Decimal 25 to Binary."},
+        {"desc": "25 / 2 = 12, Remainder = 1", "bit": "1"},
+        {"desc": "12 / 2 = 6, Remainder = 0", "bit": "0"},
+        {"desc": "6 / 2 = 3, Remainder = 0", "bit": "0"},
+        {"desc": "3 / 2 = 1, Remainder = 1", "bit": "1"},
+        {"desc": "1 / 2 = 0, Remainder = 1", "bit": "1"},
+        {"desc": "Read bottom up: 11001", "bit": ""}
+      ]
+    }
+  },
+  "dbms": {
+    "overview": "### What is DBMS?\n\nA Database Management System (DBMS) is software that interacts with end users, applications, and the database itself to capture and analyze the data. It manages the storage, retrieval, and updating of data.\n\n### Why it matters in interviews\n- **System Design**: Databases are the backbone of any large-scale application. Choosing between SQL and NoSQL is the most common system design question.\n- **Data Integrity**: Transactions and ACID properties guarantee data safety during concurrency.",
+    "learn": "### Core Concepts of DBMS\n\n1. **ACID Properties**: Atomicity, Consistency, Isolation, and Durability ensure transactions are processed reliably.\n2. **Normalization**: The process of structuring a database to reduce data redundancy (1NF, 2NF, 3NF, BCNF).\n3. **Indexing**: B-Trees and Hash Indexes speed up data retrieval operations at the cost of slower writes and increased storage.\n4. **Joins**: INNER, LEFT, RIGHT, and FULL outer joins dictate how tables relate dynamically based on foreign keys.",
+    "questions": [
+      {
+        "question_text": "Which normal form requires the removal of transitive dependencies?",
+        "option_a": "1NF",
+        "option_b": "2NF",
+        "option_c": "3NF",
+        "option_d": "BCNF",
+        "correct_answer": "C",
+        "difficulty": "medium",
+        "explanation": "Third Normal Form (3NF) requires the table to be in 2NF and have no transitive functional dependencies (i.e., non-key attributes shouldn't depend on other non-key attributes)."
+      },
+      {
+        "question_text": "What does the 'I' in ACID properties stand for?",
+        "option_a": "Integrity",
+        "option_b": "Isolation",
+        "option_c": "Idempotency",
+        "option_d": "Inheritance",
+        "correct_answer": "B",
+        "difficulty": "easy",
+        "explanation": "Isolation ensures that concurrent execution of transactions leaves the database in the same state that would have been obtained if the transactions were executed sequentially."
+      },
+      {
+        "question_text": "Which indexing data structure is most commonly used in relational databases for range queries?",
+        "option_a": "Hash Tables",
+        "option_b": "B+ Trees",
+        "option_c": "Trie",
+        "option_d": "Bloom Filters",
+        "correct_answer": "B",
+        "difficulty": "medium",
+        "explanation": "B+ Trees maintain sorted data and allow for efficient range queries, whereas Hash Tables only support O(1) exact-match queries."
+      },
+      {
+        "question_text": "What is the primary difference between a clustered and non-clustered index?",
+        "option_a": "Clustered indexes determine the physical order of data.",
+        "option_b": "Non-clustered indexes do not allow duplicate values.",
+        "option_c": "Clustered indexes are created in memory, non-clustered on disk.",
+        "option_d": "There can be multiple clustered indexes per table.",
+        "correct_answer": "A",
+        "difficulty": "hard",
+        "explanation": "A clustered index defines the physical order of data rows in a table. Because physical rows can only be sorted in one order, a table can have only one clustered index."
+      }
+    ],
+    "visualization_type": "dbms-normalization",
+    "visualization_config": {
+      "topic": "Normalization",
+      "seeded": true,
+      "tables": ["Orders", "Customers", "Products"],
+      "steps": [
+        {"desc": "UNF: Single table with repeating groups (Order, Items, CustName)."},
+        {"desc": "1NF: Remove repeating groups. Ensure atomic values."},
+        {"desc": "2NF: Remove partial dependencies on a composite primary key."},
+        {"desc": "3NF: Remove transitive dependencies (e.g., CustName depends on CustID, not OrderID)."},
+        {"desc": "✅ BCNF achieved! Every determinant is a candidate key."}
+      ]
+    }
+  },
+  "logical-puzzles": {
+    "overview": "### What are Logical Puzzles?\n\nLogical puzzles form the core of analytical reasoning in placement aptitude rounds. They involve extracting constrained data points (clues) and systematically mapping them to arrive at a single valid outcome.\n\n### Why it matters in interviews\n- **Aptitude Screens**: 90% of IT mass recruiters (TCS, Infosys, Wipro) use arrangement puzzles as heavy-weighted questions.\n- **Deductive Reasoning**: Tests the candidate's ability to hold multiple overlapping constraints in memory.",
+    "learn": "### Core Concepts of Logical Puzzles\n\n1. **Linear Arrangement**: Placing people/objects in a straight line facing North/South.\n2. **Circular Arrangement**: Placing items around a table. (Remember: Left/Right reverses depending on inward/outward facing!).\n3. **Blood Relations**: Constructing family trees using generations (parents above, children below) and gender symbols.\n4. **Direction Sense**: Tracking paths on a 2D Cartesian plane (Pythagoras theorem is heavily used here).",
+    "questions": [
+      {
+        "question_text": "If A is sitting immediately left of B who is facing North, and C is sitting immediately right of B, what is A's position relative to C?",
+        "option_a": "Immediate Right",
+        "option_b": "Immediate Left",
+        "option_c": "Second to the Left",
+        "option_d": "Second to the Right",
+        "correct_answer": "C",
+        "difficulty": "medium",
+        "explanation": "Order from left to right (facing North) is A, B, C. Thus, A is second to the left of C."
+      },
+      {
+        "question_text": "A man walks 3km North, then turns East and walks 4km. How far is he from his starting point?",
+        "option_a": "5km",
+        "option_b": "7km",
+        "option_c": "1km",
+        "option_d": "12km",
+        "correct_answer": "A",
+        "difficulty": "easy",
+        "explanation": "Using Pythagoras theorem: sqrt(3^2 + 4^2) = sqrt(9 + 16) = sqrt(25) = 5km."
+      },
+      {
+        "question_text": "In a family tree, A's son is B. C is B's sister. D is C's mother. How is D related to A?",
+        "option_a": "Sister",
+        "option_b": "Wife",
+        "option_c": "Daughter",
+        "option_d": "Mother",
+        "correct_answer": "B",
+        "difficulty": "medium",
+        "explanation": "B and C are siblings. A is B's father/mother, D is C's mother. Thus, A and D are parents to B and C, making D the wife of A (assuming A is male)."
+      },
+      {
+        "question_text": "In a circular arrangement of 5 people facing the center, if P sits second to the right of Q, how many people are sitting between P and Q?",
+        "option_a": "1",
+        "option_b": "2",
+        "option_c": "3",
+        "option_d": "0",
+        "correct_answer": "A",
+        "difficulty": "easy",
+        "explanation": "Since there are 5 people, moving 'second to the right' means there is exactly 1 person sitting directly between them on that side."
+      }
+    ],
+    "visualization_type": "logical-puzzle",
+    "visualization_config": {
+      "topic": "Logical Puzzles",
+      "seeded": true,
+      "positions": ["1st", "2nd", "3rd", "4th", "5th"],
+      "people": ["Alice", "Bob", "Carol", "Dave", "Eve"],
+      "colors": ["#3b82f6", "#8b5cf6", "#10b981", "#fb923c", "#ef4444"],
+      "finalOrder": [2, 0, 4, 1, 3],
+      "clues": [
+        "Clue 1: Alice is not in position 1 or 5.",
+        "Clue 2: Bob is immediately after Alice.",
+        "Clue 3: Carol is before Dave.",
+        "Clue 4: Eve sits exactly in the middle (3rd).",
+        "Solution: Carol → Alice → Eve → Bob → Dave ✅"
+      ]
+    }
+  }
+}

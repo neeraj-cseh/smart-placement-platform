@@ -4,6 +4,7 @@ import { Sun, Moon, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import Button from '../components/ui/Button';
+import { motion } from 'framer-motion';
 import './auth.css';
 
 function AuthPage({ mode: initialMode = 'login' }) {
@@ -77,7 +78,12 @@ function AuthPage({ mode: initialMode = 'login' }) {
       </header>
 
       <div className="auth-page__container">
-        <div className="auth-page__card">
+        <motion.div 
+          className="auth-page__card"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+        >
           <div className="auth-page__tabs">
             <button
               className={`auth-page__tab ${mode === 'login' ? 'auth-page__tab--active' : ''}`}
@@ -240,7 +246,7 @@ function AuthPage({ mode: initialMode = 'login' }) {
               <>Already have an account? <button onClick={() => setMode('login')}>Sign in</button></>
             )}
           </p>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

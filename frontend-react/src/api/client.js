@@ -1,3 +1,6 @@
+// API base URL configured via VITE_API_URL environment variable.
+// Fallback is localhost:8000 for local development.
+// For production, ensure VITE_API_URL is set to your actual API domain.
 const API_BASE = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api';
 
 function getAccessToken() {
@@ -60,7 +63,7 @@ async function refreshToken() {
   }
 }
 
-async function apiFetch(endpoint, options = {}) {
+async function apiFetch(endpoint, options = {}, retries = 3) {
   const { headers = {}, ...rest } = options;
   const token = getAccessToken();
 
@@ -73,30 +76,47 @@ async function apiFetch(endpoint, options = {}) {
     ...rest,
   };
 
-  let res = await fetch(`${API_BASE}${endpoint}`, config);
+  try {
+    let res = await fetch(`${API_BASE}${endpoint}`, config);
 
-  if (res.status === 401 && token) {
-    const refreshed = await refreshToken();
-    if (refreshed) {
-      const newToken = getAccessToken();
-      config.headers.Authorization = `Bearer ${newToken}`;
-      res = await fetch(`${API_BASE}${endpoint}`, config);
-    } else {
-      localStorage.removeItem('access');
-      localStorage.removeItem('refresh');
-      window.location.href = '/login';
-      return null;
+    if (res.status === 401 && token) {
+      const refreshed = await refreshToken();
+      if (refreshed) {
+        const newToken = getAccessToken();
+        config.headers.Authorization = `Bearer ${newToken}`;
+        res = await fetch(`${API_BASE}${endpoint}`, config);
+      } else {
+        localStorage.removeItem('access');
+        localStorage.removeItem('refresh');
+        window.location.href = '/login';
+        return null;
+      }
     }
+
+    // Auto-retry for 5xx server errors or timeouts
+    if (res.status >= 500 && retries > 0) {
+      console.warn(`API Error ${res.status} on ${endpoint}. Retrying... (${retries} left)`);
+      await new Promise(r => setTimeout(r, 1000 * (4 - retries))); // Exponential backoff
+      return apiFetch(endpoint, options, retries - 1);
+    }
+
+    if (!res.ok && res.status !== 204) {
+      const error = await res.json().catch(() => ({ error: `Server Error (${res.status})` }));
+      throw new Error(formatApiError(error) || `Request failed with status ${res.status}`);
+    }
+
+    if (res.status === 204) return null;
+
+    return res.json();
+  } catch (error) {
+    // Network errors (fetch throws TypeError on network failure)
+    if (retries > 0 && error.name === 'TypeError') {
+      console.warn(`Network Error on ${endpoint}. Retrying... (${retries} left)`);
+      await new Promise(r => setTimeout(r, 1000 * (4 - retries)));
+      return apiFetch(endpoint, options, retries - 1);
+    }
+    throw error;
   }
-
-  if (!res.ok && res.status !== 204) {
-    const error = await res.json().catch(() => ({ error: 'Request failed' }));
-    throw new Error(formatApiError(error) || 'Request failed');
-  }
-
-  if (res.status === 204) return null;
-
-  return res.json();
 }
 
 export const api = {

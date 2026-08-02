@@ -1,0 +1,49 @@
+/* Settings page specific styles */
+.settings__section {
+  border-top: 1px solid var(--border-primary);
+  padding-top: 16px;
+}
+
+.settings__section-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--text-secondary);
+}
+
+select {
+  padding: 10px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  accent-color: var(--accent-primary);
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+select:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-primary) 15%, transparent);
+}
+
+
+.profile__toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  margin-top: 12px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.profile__toggle input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--accent-primary);
+  margin: 0;
+}

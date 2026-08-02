@@ -46,8 +46,8 @@ INSTALLED_APPS = [
 
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -118,6 +118,7 @@ REST_FRAMEWORK = {
         'anon': '30/minute',
         'user': '60/minute',
         'login': '5/minute',
+        'code_execution': '10/hour',
     },
 }
 

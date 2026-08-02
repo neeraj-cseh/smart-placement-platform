@@ -1,0 +1,118 @@
+/* ==========================================================================
+   ECOSYSTEM LAYOUTS - PREMIUM CAPSULE TABS
+   ========================================================================== */
+
+.ecosystem-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.ecosystem-header {
+  padding: 24px 32px 0 32px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color, rgba(255,255,255,0.05));
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.ecosystem-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.ecosystem-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* ── Capsule Tab Bar Navigation ────────────────────────────────────────── */
+.ecosystem-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-primary);
+  border-radius: 999px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  margin-bottom: 24px;
+}
+
+.ecosystem-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--text-secondary);
+  border-radius: 999px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  position: relative;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ecosystem-nav-link:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.ecosystem-nav-link.active {
+  color: #ffffff;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  box-shadow: 
+    0 4px 12px rgba(59, 130, 246, 0.3), 
+    0 0 8px rgba(139, 92, 246, 0.2), 
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transform: translateY(0);
+}
+
+.ecosystem-nav-link svg {
+  transition: transform 0.2s ease;
+}
+
+.ecosystem-nav-link:hover svg {
+  transform: translateY(-1px);
+}
+
+.ecosystem-content {
+  flex: 1;
+  position: relative;
+  margin-top: 10px;
+}
+
+/* ── Light Mode Tab Bar Contrast ────────────────────────────────────────── */
+[data-theme="light"] .ecosystem-nav {
+  background: rgba(0, 0, 0, 0.03);
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.04), 
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* ── Responsive Mobile Scroll ────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .ecosystem-nav {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    max-width: 100%;
+    border-radius: var(--radius-lg);
+    padding: 4px;
+    gap: 4px;
+  }
+  .ecosystem-nav::-webkit-scrollbar {
+    display: none;
+  }
+  .ecosystem-nav-link {
+    padding: 6px 14px;
+    font-size: 0.76rem;
+  }
+}

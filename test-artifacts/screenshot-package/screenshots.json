@@ -1,0 +1,198 @@
+[
+  {
+    "filename": "Public/01-landing-page.png",
+    "route": "/",
+    "purpose": "Public landing and interactive demo entry point.",
+    "caption": "PrepSmart public landing page with platform entry actions.",
+    "chapter": "Project Overview"
+  },
+  {
+    "filename": "Authentication/02-login.png",
+    "route": "/login",
+    "purpose": "User sign-in screen.",
+    "caption": "Login screen for registered users.",
+    "chapter": "Authentication"
+  },
+  {
+    "filename": "Authentication/03-signup.png",
+    "route": "/signup",
+    "purpose": "New user registration screen.",
+    "caption": "Signup screen with student profile fields.",
+    "chapter": "Authentication"
+  },
+  {
+    "filename": "Dashboard/01-student-dashboard.png",
+    "route": "/",
+    "purpose": "Authenticated student dashboard.",
+    "caption": "Student dashboard with readiness metrics and analytics widgets.",
+    "chapter": "Frontend Screens"
+  },
+  {
+    "filename": "Analytics/02-analytics.png",
+    "route": "/analytics",
+    "purpose": "Student analytics charts and test history.",
+    "caption": "Analytics page showing topic accuracy, momentum, and track progress.",
+    "chapter": "Analytics"
+  },
+  {
+    "filename": "Prep/03-prep-journey.png",
+    "route": "/prep/journey",
+    "purpose": "Topic journey and active learning path.",
+    "caption": "Prep journey with topic progression and unlock state.",
+    "chapter": "Learning Module"
+  },
+  {
+    "filename": "Prep/04-prep-roadmaps.png",
+    "route": "/prep/roadmaps",
+    "purpose": "Learning roadmap overview.",
+    "caption": "Roadmaps page listing available preparation tracks.",
+    "chapter": "Learning Module"
+  },
+  {
+    "filename": "Prep/05-prep-milestones.png",
+    "route": "/prep/milestones",
+    "purpose": "Mock assessment milestone overview.",
+    "caption": "Milestones page showing mock tests and readiness progression.",
+    "chapter": "Mock Tests"
+  },
+  {
+    "filename": "Prep/06-topic-study.png",
+    "route": "/prep/topic/number-systems",
+    "purpose": "Detailed topic study workspace.",
+    "caption": "Topic study page with learning, visualization, practice, quiz, and AI tabs.",
+    "chapter": "Learning Module"
+  },
+  {
+    "filename": "CodeLab/07-problem-arena.png",
+    "route": "/code-lab/arena",
+    "purpose": "Coding problem browser.",
+    "caption": "Problem arena with filters, stats, and problem cards.",
+    "chapter": "Code Lab"
+  },
+  {
+    "filename": "CodeLab/08-problem-solving-workspace.png",
+    "route": "/code-lab/arena/two-sum",
+    "purpose": "Fullscreen problem-solving workspace.",
+    "caption": "Problem solving workspace with statement, editor, console, and AI mentor controls.",
+    "chapter": "Code Lab"
+  },
+  {
+    "filename": "CodeLab/09-standalone-code-workspace.png",
+    "route": "/code-lab/workspace",
+    "purpose": "General purpose code execution workspace.",
+    "caption": "Standalone code workspace with editor, terminal, settings, and AI panel.",
+    "chapter": "Code Lab"
+  },
+  {
+    "filename": "CodeLab/10-contest-hub.png",
+    "route": "/code-lab/contests",
+    "purpose": "Contest listing and leaderboard entry screen.",
+    "caption": "Contest hub with upcoming/live/past contests.",
+    "chapter": "Code Lab"
+  },
+  {
+    "filename": "AICoach/11-ai-interview.png",
+    "route": "/ai/interview",
+    "purpose": "AI interview setup and session screen.",
+    "caption": "AI interview screen with interview type cards and readiness presentation.",
+    "chapter": "AI Interview"
+  },
+  {
+    "filename": "Career/12-companies.png",
+    "route": "/career/companies",
+    "purpose": "Company readiness browser.",
+    "caption": "Companies page showing target-company readiness cards.",
+    "chapter": "Company Readiness"
+  },
+  {
+    "filename": "Career/13-company-detail.png",
+    "route": "/career/companies/Amazon",
+    "purpose": "Company-specific readiness detail.",
+    "caption": "Company detail page with readiness breakdown and radar chart.",
+    "chapter": "Company Readiness"
+  },
+  {
+    "filename": "Profile/14-profile-editor.png",
+    "route": "/profile/me",
+    "purpose": "Student profile editing screen.",
+    "caption": "Profile editor with academic, contact, and portfolio fields.",
+    "chapter": "Profile"
+  },
+  {
+    "filename": "Profile/15-skills-passport.png",
+    "route": "/profile/passport",
+    "purpose": "Authenticated skills passport.",
+    "caption": "Skills passport page with employability evidence and charts.",
+    "chapter": "Passport"
+  },
+  {
+    "filename": "Settings/16-settings.png",
+    "route": "/settings",
+    "purpose": "Account and preference settings.",
+    "caption": "Settings page with account, notification, privacy, and password controls.",
+    "chapter": "Settings"
+  },
+  {
+    "filename": "PublicShared/01-shared-passport.png",
+    "route": "/passport/shared/91c6cab9-37b1-4ea8-8d11-ec3a0e1c0abb",
+    "purpose": "Public shared passport view.",
+    "caption": "Public skills passport accessed through a share token.",
+    "chapter": "Passport"
+  },
+  {
+    "filename": "PublicShared/02-shared-portfolio.png",
+    "route": "/portfolio/shared/portfolio-04a7ce6b",
+    "purpose": "Public shared portfolio view.",
+    "caption": "Public portfolio accessed through a share slug.",
+    "chapter": "Portfolio"
+  },
+  {
+    "filename": "Admin/01-admin-users.png",
+    "route": "/admin?tab=users",
+    "purpose": "Admin users management screen.",
+    "caption": "Admin console users table and actions.",
+    "chapter": "Administration"
+  },
+  {
+    "filename": "Admin/02-admin-tracks.png",
+    "route": "/admin?tab=tracks",
+    "purpose": "Admin tracks management screen.",
+    "caption": "Admin console tracks table and actions.",
+    "chapter": "Administration"
+  },
+  {
+    "filename": "Admin/03-admin-topics.png",
+    "route": "/admin?tab=topics",
+    "purpose": "Admin topics management screen.",
+    "caption": "Admin console topics table and actions.",
+    "chapter": "Administration"
+  },
+  {
+    "filename": "Admin/04-admin-questions.png",
+    "route": "/admin?tab=questions",
+    "purpose": "Admin questions management screen.",
+    "caption": "Admin console questions table and actions.",
+    "chapter": "Administration"
+  },
+  {
+    "filename": "Admin/05-admin-tests.png",
+    "route": "/admin?tab=tests",
+    "purpose": "Admin tests management screen.",
+    "caption": "Admin console tests table and actions.",
+    "chapter": "Administration"
+  },
+  {
+    "filename": "Admin/06-admin-companies.png",
+    "route": "/admin?tab=companies",
+    "purpose": "Admin companies management screen.",
+    "caption": "Admin console companies table and actions.",
+    "chapter": "Administration"
+  },
+  {
+    "filename": "Errors/01-not-found.png",
+    "route": "/not-a-real-route",
+    "purpose": "404 fallback screen.",
+    "caption": "Not found page for unmatched frontend routes.",
+    "chapter": "Error Handling"
+  }
+]

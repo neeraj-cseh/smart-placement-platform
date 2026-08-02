@@ -190,7 +190,8 @@ class RefreshTokenView(APIView):
             return Response({
                 "access": str(access_token),
             })
-        except Exception:
+        except Exception as e:
+            logger.error("Token refresh error", exc_info=e)
             return Response({"error": "Invalid or expired refresh token"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
@@ -203,8 +204,8 @@ class LogoutView(APIView):
             if refresh_token:
                 token = RefreshToken(refresh_token)
                 token.blacklist()
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning("Logout token blacklist failed", exc_info=e)
 
         return Response({"message": "Logged out successfully"})
 
@@ -614,7 +615,7 @@ class DashboardView(APIView):
                 {
                     "label": "Placement readiness",
                     "value": f"{readiness_score}%",
-                    "change": "Computed from live progress",
+                    "change": "Live progress",
                     "tone": "cyan",
                     "icon": "target",
                 },
